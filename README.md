@@ -29,17 +29,17 @@ Listar os filmes que estão em atraso com seu valor original e seu valor com mul
 O sistema deve ter a opção de devolução de filmes.
 Listar as devoluções.
 O menu do sistema deve ficar:
-Cadastro Gênero
-Cadastro Filmes
-Cadastro Cliente
-Cadastro funcionário
-Cadastro Locação
-Fazer Devolução
-Excluir gênero
-Excluir Filmes
-Excluir Cliente
-Excluir Funcionário
-Excluir Locação
-Listar locação data especifica
-Listar filmes em atraso
-Listar devolução
+-Cadastro Gênero
+-Cadastro Filmes
+-Cadastro Cliente
+-Cadastro funcionário
+-Cadastro Locação
+-Fazer Devolução
+-Excluir gênero
+-Excluir Filmes
+-Excluir Cliente
+-Excluir Funcionário
+-Excluir Locação
+-Listar locação data especifica
+-Listar filmes em atraso
+-Listar devolução
