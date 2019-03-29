@@ -38,8 +38,13 @@ O menu do sistema deve ficar:
 7. Excluir gênero
 8. Excluir Filmes
 9. Excluir Cliente
+
 10.Excluir Funcionário
+
 11.Excluir Locação
+
 12.Listar locação data especifica
+
 13.Listar filmes em atraso
+
 14.Listar devolução
