@@ -1,6 +1,3 @@
-
-Locação: codlocacao,codcli,dataloca, datadevo,valortotal,juro,desc,codcliente,codfunc,pagamento
-
 Pagamento deve ser char e guardar o tipo de pagamento. 1- a vista 2 - prazo
 
 Data de devolução são de 3 dias até 3 filmes e 4 dias mais de 3 filmes
@@ -11,9 +8,6 @@ Se pagamento na devolução preço normal
 
 Se atrasado, cobrar o valor da locação por dia de atraso.
 
-Locação/filmes: codloc,codfilme
-
-Devolução: CodLoc, DataLoc,Data_devolução, ValorOriginal, ValorPago, dias_atraso.
 
 Observações: Ao excluir um gênero verifique se tem algum filme cadastrado com esse gênero. 
 Ao excluir um cliente verifique se tem alguma locação com este cliente. 
