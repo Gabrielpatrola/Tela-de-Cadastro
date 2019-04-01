@@ -15,7 +15,7 @@ typedef struct funcionario{
 	char cel_func[15];
 	char email_func[50];
 	char data_admissao[11];
-	struct funcionario *proximo;
+	struct funcionario *prox;
 }funcionarios;
 
 typedef struct locacao{
@@ -29,7 +29,7 @@ typedef struct locacao{
 	int cod_func;
 	char pagamento[8];
 	int cod_filme;
-	struct locacao *proximo;
+	struct locacao *prox;
 }locacoes;
 
 typedef struct devolucao{
@@ -39,7 +39,7 @@ typedef struct devolucao{
 	float valor_original;
 	float valor_pago;
 	int dias_atrasados;	
-	struct devolucao *proximo;
+	struct devolucao *prox;
 }devolucoes;
 
 typedef struct cliente{
@@ -51,13 +51,13 @@ typedef struct cliente{
 	char cel_cliente[16];
 	char email_cliente[50];
 	char endereco[80];
-	struct cliente *proximo;
+	struct cliente *prox;
 }clientes;
 
 typedef struct genero{
 	int cod_gen;
 	char nome[80];
-	struct genero *proximo;
+	struct genero *prox;
 }generos;
 
 typedef struct filme{
@@ -67,7 +67,7 @@ typedef struct filme{
 	char ano[5];
 	char classificacao[50];
 	float valor;
-	struct filme *proximo;
+	struct filme *prox;
 }filmes;
 
 typedef struct Node{
@@ -81,7 +81,6 @@ void inicia(node *LISTA){
  	LISTA->prox = NULL;
  	tam=0;
 }
-
 
 int vazia(node *LISTA){
  	if(LISTA->prox == NULL)
@@ -245,7 +244,7 @@ node *retira(node *LISTA){
  	}
 }
 
-int menu(void){
+int menu(){
 	system("cls");
 	system("Color 37");	
  	int opt;
@@ -273,118 +272,113 @@ int menu(void){
     gotoxy(24,20);printf("| 14 - Listar devolução \n");
     gotoxy(24,21);printf("| 15 - Sair \n" );
     gotoxy(24,22);printf("| Opção : " );
-	gotoxy(33,22);scanf("%d", &opt);
- 	return opt;
 }
 
-void opcao(node *LISTA, int op){
+
+int main(){
+	setlocale(LC_ALL,"");
+	int opcao, numero;
+ 	node *genero = (node *) malloc(sizeof(node));
  	node *tmp;
- 	switch(op){
-  	case 0:
-   		libera(LISTA);
+ do{
+    menu(); 
+    scanf("%i", &opcao);
+	system("cls");
+        switch (opcao){ 
+            case 0:
+   		libera(genero);
    		system("pause");
    	break;
    
   	case 1:
-   		libera(LISTA);
-   		inicia(LISTA);
+   		libera(genero);
+   		inicia(genero);
    		system("pause");
    	break;
   
   	case 2:
-   		exibe(LISTA);
+   		exibe(genero);
    		system("pause");
    	break;
   
   	case 3:
-   		insereInicio(LISTA);
+   		insereInicio(genero);
    		system("pause");
    	break;  
    
   	case 4:
-   		insereFim(LISTA);
+   		insereFim(genero);
    		system("pause");
    	break;
    
   	case 5:
-   		insere(LISTA);
+   		insere(genero);
    		system("pause");
    	break;
   
   	case 6:
-   		tmp= retiraInicio(LISTA);
+   		tmp= retiraInicio(genero);
    		printf("Retirado: %3d\n\n", tmp->num);
    		system("pause");
    	break;
    
   	case 7:
-   		tmp= retiraFim(LISTA);
+   		tmp= retiraFim(genero);
    		printf("Retirado: %3d\n\n", tmp->num);
    		system("pause");
    	break;
   
   	case 8:
-   		tmp= retira(LISTA);
+   		tmp= retira(genero);
    		printf("Retirado: %3d\n\n", tmp->num);
    		system("pause");
    	break;
    	
 	case 9:
-   		exibe(LISTA);
+   		exibe(genero);
    		system("pause");
    	break;
    	
    	case 10:
-   		exibe(LISTA);
+   		exibe(genero);
    		system("pause");
    	break;
   
     case 11:
-   		exibe(LISTA);
+   		exibe(genero);
    		system("pause");
    	break;
    	
    	case 12:
-   		exibe(LISTA);
+   		exibe(genero);
    		system("pause");
    	break;
    	
    	case 13:
-   		exibe(LISTA);
+   		exibe(genero);
    		system("pause");
    	break;
    	
    	case 14:
-   		exibe(LISTA);
+   		exibe(genero);
    		system("pause");
    	break;
    	
    	case 15:
-   		exibe(LISTA);
+   		libera(genero);
+   		libera(filme);
+   		libera(cliente);
+   		libera(funcionario);
+   		libera(locacao);
    		system("pause");
+   		return 0;
    	break;
    	
   	default:
    		printf("Comando inválido\n\n");
    		system("pause");
- 	}
-}
-
-int main(){
-	setlocale(LC_ALL,"");
- 	node *LISTA = (node *) malloc(sizeof(node));
- 	if(!LISTA){
-  		printf("Sem memória disponível!\n");
-  		exit(1);
-	}
-	else{
- 		inicia(LISTA);
- 		int opt;
- 		do{
-  			opt=menu();
-  			opcao(LISTA,opt);
- 		}while(opt);
- 		free(LISTA);
- 		return 0;
- 	}
+        }    
+    }while (opcao!=15);
+    system("pause"); 
+    return 0;
 }
