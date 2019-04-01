@@ -165,7 +165,7 @@ void libera(node *LISTA){
 void insere(node *LISTA){
  	int pos,
   	count;
- 	printf("Em que posicao, [de 1 ate %d] voce deseja inserir: ", tam);
+ 	printf("Em que posição, [de 1 ate %d] você deseja inserir: ", tam);
  	scanf("%d", &pos);
  	if(pos>0 && pos <= tam){
   		if(pos==1)
@@ -185,13 +185,13 @@ void insere(node *LISTA){
    
  	}
 	else{
-  		printf("Elemento invalido\n\n"); 
+  		printf("Elemento inválido\n\n"); 
   	}	
 }
 
 node *retiraInicio(node *LISTA){
  	if(LISTA->prox == NULL){
-  		printf("Lista ja esta vazia\n");
+  		printf("Lista já está vazia\n");
   		return NULL;
  	}
 	 else{
@@ -204,7 +204,7 @@ node *retiraInicio(node *LISTA){
 
 node *retiraFim(node *LISTA){
  	if(LISTA->prox == NULL){
-  		printf("Lista ja vazia\n\n");
+  		printf("Lista já vazia\n\n");
   		return NULL;
  	}
 	else{
@@ -222,7 +222,7 @@ node *retiraFim(node *LISTA){
 
 node *retira(node *LISTA){
  	int opt, count;
- 	printf("Que posicao, [de 1 ate %d] voce deseja retirar: ", tam);
+ 	printf("Que posição, [de 1 ate %d] você deseja retirar: ", tam);
  	scanf("%d", &opt);
  	if(opt>0 && opt <= tam){
   		if(opt==1)
@@ -240,25 +240,40 @@ node *retira(node *LISTA){
   		}
  	}
 	else{
-  		printf("Elemento invalido\n\n");
+  		printf("Elemento inválido\n\n");
  	 	return NULL;
  	}
 }
 
 int menu(void){
+	system("cls");
+	system("Color 37");	
  	int opt;
- 	printf("Escolha a opcao\n");
- 	printf("0. Sair\n");
- 	printf("1. Zerar lista\n");
- 	printf("2. Exibir lista\n");
- 	printf("3. Adicionar node no inicio\n");
- 	printf("4. Adicionar node no final\n");
- 	printf("5. Escolher onde inserir\n");
- 	printf("6. Retirar do inicio\n");
- 	printf("7. Retirar do fim\n");
- 	printf("8. Escolher de onde tirar\n");
- 	printf("Opcao: "); 
-	scanf("%d", &opt);
+ 	 for(int i=24;i<65;i++){
+		gotoxy(i,23);printf("-"); //For para o prenchimento da parte inferior do menu
+	}
+	for(int x = 6; x<23; x++){
+		gotoxy(64, x);printf("|");
+	}	
+ 	gotoxy(24,5);printf("------------- MENU PRINCIPAL ------------");
+    gotoxy(24,6);printf("| Digite a sua escolha: \n" );
+    gotoxy(24,7);printf("| 1 - Cadastro Gênero \n" );
+    gotoxy(24,8);printf("| 2 - Cadastro Filmes \n" );
+    gotoxy(24,9);printf("| 3 - Cadastro Cliente \n");
+    gotoxy(24,10);printf("| 4 - Cadastro Funcionário \n" );
+    gotoxy(24,11);printf("| 5 - Cadastro Locação \n" );
+    gotoxy(24,12);printf("| 6 - Fazer Devolução \n");
+    gotoxy(24,13);printf("| 7 - Excluir gênero \n" );
+    gotoxy(24,14);printf("| 8 - Excluir Filmes \n" );
+    gotoxy(24,15);printf("| 9 - Excluir Cliente \n");
+    gotoxy(24,16);printf("| 10 - Excluir Funcionário \n" );
+    gotoxy(24,17);printf("| 11 - Excluir Locação \n" );
+    gotoxy(24,18);printf("| 12 - Listar locação data específica \n");
+    gotoxy(24,19);printf("| 13 - Listar filmes em atraso \n");
+    gotoxy(24,20);printf("| 14 - Listar devolução \n");
+    gotoxy(24,21);printf("| 15 - Sair \n" );
+    gotoxy(24,22);printf("| Opção : " );
+	gotoxy(33,22);scanf("%d", &opt);
  	return opt;
 }
 
@@ -267,53 +282,99 @@ void opcao(node *LISTA, int op){
  	switch(op){
   	case 0:
    		libera(LISTA);
+   		system("pause");
    	break;
    
   	case 1:
    		libera(LISTA);
    		inicia(LISTA);
+   		system("pause");
    	break;
   
   	case 2:
    		exibe(LISTA);
+   		system("pause");
    	break;
   
   	case 3:
    		insereInicio(LISTA);
+   		system("pause");
    	break;  
    
   	case 4:
    		insereFim(LISTA);
+   		system("pause");
    	break;
    
   	case 5:
    		insere(LISTA);
+   		system("pause");
    	break;
   
   	case 6:
    		tmp= retiraInicio(LISTA);
    		printf("Retirado: %3d\n\n", tmp->num);
+   		system("pause");
    	break;
    
   	case 7:
    		tmp= retiraFim(LISTA);
    		printf("Retirado: %3d\n\n", tmp->num);
+   		system("pause");
    	break;
   
   	case 8:
    		tmp= retira(LISTA);
    		printf("Retirado: %3d\n\n", tmp->num);
+   		system("pause");
+   	break;
+   	
+	case 9:
+   		exibe(LISTA);
+   		system("pause");
+   	break;
+   	
+   	case 10:
+   		exibe(LISTA);
+   		system("pause");
    	break;
   
+    case 11:
+   		exibe(LISTA);
+   		system("pause");
+   	break;
+   	
+   	case 12:
+   		exibe(LISTA);
+   		system("pause");
+   	break;
+   	
+   	case 13:
+   		exibe(LISTA);
+   		system("pause");
+   	break;
+   	
+   	case 14:
+   		exibe(LISTA);
+   		system("pause");
+   	break;
+   	
+   	case 15:
+   		exibe(LISTA);
+   		system("pause");
+   	break;
+   	
   	default:
-   		printf("Comando invalido\n\n");
+   		printf("Comando inválido\n\n");
+   		system("pause");
  	}
 }
 
 int main(){
+	setlocale(LC_ALL,"");
  	node *LISTA = (node *) malloc(sizeof(node));
  	if(!LISTA){
-  		printf("Sem memoria disponivel!\n");
+  		printf("Sem memória disponível!\n");
   		exit(1);
 	}
 	else{
