@@ -1,8 +1,3 @@
-Filme: codfilme, nome, codgenero,ano, classificaco, valor
-
-Cliente: codcli, nome, rg, cpf, emial,cel, endereço,data nasc
-
-Funcionário: codfunc, nome, data nasc, rg, cpf,cel, email, dataadm
 
 Locação: codlocacao,codcli,dataloca, datadevo,valortotal,juro,desc,codcliente,codfunc,pagamento
 
