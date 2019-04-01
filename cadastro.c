@@ -1,31 +1,56 @@
-/*************************************************************************
-DescriÃ§Ã£o do Algoritmo: O trabalho prÃ¡tico 03 consiste na criaÃ§Ã£o de um programa que vai simular um sistema de
-locaÃ§Ã£o de filmes. Para isso vocÃªs devem usar a estrutura de lista dinÃ¢mica simples.
-Nome da Disciplina: Estrutura de Dados
-Nome Professor: Leonair
-Nome Aluno: Gabriel Augusto Queiroz de Almeida
-Turma: Estrutura de Dados
-RGA: 201611901002
-Data Entrega:
-*************************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include <ctype.h>    //ContÃ©m funÃ§Ãµes para manipulaÃ§Ã£o de caracteres
-#include <locale.h>   //Para colocar acentos, acrescenta-se o cÃ³digo abaixo  dentro do int main() setlocale(LC_ALL,"");
+#include <ctype.h>    //Contêm funções para manipulação de caracteres
+#include <locale.h>   //Para colocar acentos, acrescenta-se o código abaixo  dentro do int main() setlocale(LC_ALL,"");
 #include <conio2.h>   //Para trabalhar com gotoxy(), textcolor(), textbackground(),clrscr()
 
-typedef struct dado{
-	int codigo;
+typedef struct funcionario{
+	int cod_func;
+	char nome_func[80];
+	char nasc_func[11];
+	char rg_func[13];
+	char cpf_func[15];
+	char cel_func[15];
+	char email_func[50];
+	char data_admissao[11];
+	struct funcionario *proximo;
+}funcionarios;
+
+typedef struct cliente{
+	int cod_cliente;
+	char nome_cliente[80];
+	char nasc_cliente[11];
+	char rg_cliente[13];
+	char cpf_cliente[15];
+	char cel_cliente[16];
+	char email_cliente[50];
+	char endereco[80];
+	struct cliente *proximo;
+}clientes;
+
+typedef struct genero{
+	int cod_gen;
 	char nome[80];
+	struct genero *proximo;
+}generos;
+
+typedef struct filme{
+	int cod_filme;
+	int cod_gen;
+	char nome_filme[80];
+	char ano[5];
+	char classificacao[50];
 	float valor;
-	int qt;
-}dados;
+	struct filme *proximo;
+}filmes;
 
 typedef struct Item{ 
-    dados numero;
+    generos genero;
+    filmes filme;
+    clientes cliente;
+    funcionarios funcionario;
     struct Item *proximo; 
 }Itens;
 
@@ -36,7 +61,7 @@ typedef struct Filas{
 
 void Inicializar(Fila **fila){ 
     // -> Recebe a fila por referencia 
-    //    para inicializï¿½-la 
+    //    para inicialização
     *fila = (Fila *) malloc(sizeof(Fila)); 
     (*fila)->inicio = NULL; 
     (*fila)->fim = NULL; 
@@ -46,7 +71,38 @@ int EstaVazia(Fila *fila){
     return fila->inicio == NULL; 
 }
 
-void Inserir(Fila *fila, int elemento){ 
+void Inserir(Fila *fila, int elemento) 
+{ 
+    Itens *novo; 
+    novo = (Itens *)malloc(sizeof(Itens));  
+
+    // -> Verifica se a memória foi alocada com sucesso 
+    if (novo != NULL) 
+    { 
+        novo->genero.cod_gen = elemento; 
+        fflush(stdin);
+    	printf("digite nome do gênero:");
+    	fgets(novo->genero.nome, 80, stdin);
+		fflush(stdin);
+		novo->proximo = NULL;
+		
+        if(EstaVazia(fila)) 
+        { 
+            // -> Primeiro Item da Fila. 
+            fila->inicio = novo; 
+            fila->fim = novo; 
+        } 
+        else 
+        { 
+            // -> Ultimo item da Fila 
+            fila->fim->proximo = novo; 
+            fila->fim=novo; 
+        } 
+    } 
+}
+
+
+void Inserir_cliente(Fila *fila, int elemento){ 
     Itens *novo; 
     novo = (Itens *)malloc(sizeof(Itens));
 	int aux, valor;
@@ -54,22 +110,133 @@ void Inserir(Fila *fila, int elemento){
     // -> Verifica se a memória foi alocada com sucesso 
     if (novo != NULL){ 
     	fflush(stdin);
- 		novo->numero.codigo = elemento;  
+ 		novo->cliente.cod_cliente = elemento;  
 		fflush(stdin);	
 		
-		printf("digite quantidade:");	
-    	scanf("%d", &aux);
-    	novo->numero.qt = aux; 
-    	fflush(stdin);
-    	
-    	printf("digite valor:");
-    	scanf("%d", &valor );
-    	novo->numero.valor= valor; 
-    	fflush(stdin);
-    	
     	printf("digite nome:");
-    	fgets(novo->numero.nome, 80, stdin);
+    	fgets(novo->cliente.nome_cliente, 80, stdin);
 		fflush(stdin);
+		
+		printf("digite a data de nascimento:");
+    	fgets(novo->cliente.nasc_cliente, 11, stdin);
+		fflush(stdin);
+		
+		printf("digite o rg:");
+    	fgets(novo->cliente.rg_cliente, 13, stdin);
+		fflush(stdin);
+		
+		printf("digite o cpf:");
+    	fgets(novo->cliente.cpf_cliente, 15, stdin);
+		fflush(stdin);
+		
+		printf("digite o numero de celular:");
+    	fgets(novo->cliente.cel_cliente, 16, stdin);
+		fflush(stdin);
+		
+		printf("digite o email:");
+    	fgets(novo->cliente.email_cliente, 50, stdin);
+		fflush(stdin);
+		
+		printf("digite o endereco:");
+    	fgets(novo->cliente.endereco, 80, stdin);
+		fflush(stdin);
+        novo->proximo = NULL;
+
+        if(EstaVazia(fila)){ 
+            // -> Primeiro Item da Fila. 
+            fila->inicio = novo; 
+            fila->fim = novo; 
+        } 
+        else{ 
+            // -> Ultimo item da Fila 
+            fila->fim->proximo = novo; 
+            fila->fim=novo; 
+        } 
+    } 
+}
+
+void Inserir_funcionario(Fila *fila, int elemento){ 
+    Itens *novo; 
+    novo = (Itens *)malloc(sizeof(Itens));
+	int aux, valor;
+	char nome; 
+    // -> Verifica se a memória foi alocada com sucesso 
+    if (novo != NULL){ 
+    	fflush(stdin);
+ 		novo->funcionario.cod_func = elemento;  
+		fflush(stdin);	
+		
+    	printf("digite nome:");
+    	fgets(novo->funcionario.nome_func, 80, stdin);
+		fflush(stdin);
+		
+		printf("digite a data de nascimento:");
+    	fgets(novo->funcionario.nasc_func, 11, stdin);
+		fflush(stdin);
+		
+		printf("digite a data de admissão:");
+    	fgets(novo->funcionario.data_admissao, 11, stdin);
+		fflush(stdin);
+		
+		printf("digite o rg:");
+    	fgets(novo->funcionario.rg_func, 13, stdin);
+		fflush(stdin);
+		
+		printf("digite o cpf:");
+    	fgets(novo->funcionario.cpf_func, 15, stdin);
+		fflush(stdin);
+		
+		printf("digite o numero de celular:");
+    	fgets(novo->funcionario.cel_func, 16, stdin);
+		fflush(stdin);
+		
+		printf("digite o email:");
+    	fgets(novo->funcionario.email_func, 50, stdin);
+		fflush(stdin);
+		
+        novo->proximo = NULL;
+
+        if(EstaVazia(fila)){ 
+            // -> Primeiro Item da Fila. 
+            fila->inicio = novo; 
+            fila->fim = novo; 
+        } 
+        else{ 
+            // -> Ultimo item da Fila 
+            fila->fim->proximo = novo; 
+            fila->fim=novo; 
+        } 
+    } 
+}
+
+void Inserir_Filme(Fila *fila, int elemento, int auxiliar){ 
+    Itens *novo; 
+    novo = (Itens *)malloc(sizeof(Itens));
+	float valor;
+	int aux;
+	char nome; 
+    // -> Verifica se a memória foi alocada com sucesso 
+    if (novo != NULL){ 
+    	fflush(stdin);
+ 		novo->filme.cod_filme = elemento;  
+ 		novo->filme.cod_gen = auxiliar;
+		fflush(stdin);	
+		
+    	printf("digite nome do filme:");
+    	fgets(novo->filme.nome_filme, 80, stdin);
+		fflush(stdin);
+		
+		printf("digite o ano do filme:");
+    	fgets(novo->filme.ano, 5, stdin);
+		fflush(stdin);
+		
+		printf("digite a classificação do filme:");
+    	fgets(novo->filme.classificacao, 50, stdin);
+		fflush(stdin);
+		
+		printf("digite o valor do filme:");
+		scanf("%f", &valor);
+		novo->filme.valor = valor;
         novo->proximo = NULL;
         
         if(EstaVazia(fila)){ 
@@ -112,10 +279,87 @@ void MostrarFila(Fila *fila){
         while(item != NULL){ 
             i++; 
             printf("Item [%i]\n",i); 
-            printf("Codigo-> %d\t", item->numero.codigo); 
-            printf("Nome-> %s\t", item->numero.nome); 
-            printf("Qt-> %d\t", item->numero.qt); 
-            printf("Valor-> %.2f\n", item->numero.valor); 
+            printf("Codigo do gênero -> %d", item->genero.cod_gen); 
+            printf("\nNome do gênero -> %s\n", item->genero.nome);
+            item = item->proximo; 
+        } 
+    }
+    printf("---------------------------------\n"); 
+}
+
+void MostrarFila_Filme(Fila *fila){     
+	int i = 0; 
+    Itens *item; 
+    printf("\n\n Listando...\n\n"); 
+    printf("---------------------------------\n");
+    if (EstaVazia(fila)){ 
+        printf ("A Fila esta vazia!\n"); 
+    } 
+    else{       
+        item = fila->inicio;
+        while(item != NULL){ 
+            i++; 
+            printf("Item [%i]\n",i); 
+            printf("Codigo do Filme -> %d\n", item->filme.cod_filme); 
+            printf("Nome do Filme-> %s", item->filme.nome_filme);
+            printf("Codigo do Gênero -> %d", item->filme.cod_gen); 
+            printf("\nAno do Filme -> %s", item->filme.ano); 
+            printf("Classificação -> %s", item->filme.classificacao);
+            printf("Valor -> %f\n", item->filme.valor); 
+            item = item->proximo; 
+        } 
+    }
+    printf("---------------------------------\n"); 
+}
+
+void MostrarFila_cliente(Fila *fila){     
+	int i = 0; 
+    Itens *item; 
+    printf("\n\n Listando...\n\n"); 
+    printf("---------------------------------\n");
+    if (EstaVazia(fila)){ 
+        printf ("A Fila esta vazia!\n"); 
+    } 
+    else{       
+        item = fila->inicio;
+        while(item != NULL){ 
+            i++; 
+            printf("Item [%i]\n",i); 
+            printf("Codigo do Cliente -> %d\n", item->cliente.cod_cliente); 
+            printf("Nome do Cliente -> %s", item->cliente.nome_cliente);
+            printf("Data de Nascimento -> %s", item->cliente.nasc_cliente); 
+            printf("RG -> %s", item->cliente.rg_cliente); 
+            printf("CPF -> %s", item->cliente.cpf_cliente);
+            printf("Celular -> %s", item->cliente.cel_cliente);
+			printf("Email -> %s", item->cliente.email_cliente);  
+			printf("Endereco -> %s", item->cliente.endereco); 
+            item = item->proximo; 
+        } 
+    }
+    printf("---------------------------------\n"); 
+}
+
+void MostrarFila_funcionario(Fila *fila){     
+	int i = 0; 
+    Itens *item; 
+    printf("\n\n Listando...\n\n"); 
+    printf("---------------------------------\n");
+    if (EstaVazia(fila)){ 
+        printf ("A Fila esta vazia!\n"); 
+    } 
+    else{       
+        item = fila->inicio;
+        while(item != NULL){ 
+            i++; 
+            printf("Item [%i]\n",i); 
+            printf("Codigo do Funcionário -> %d\n", item->funcionario.cod_func); 
+            printf("Nome do Funcionário -> %s", item->funcionario.nome_func);
+            printf("Data de Nascimento -> %s", item->funcionario.nasc_func); 
+        	printf("Data de Admissão -> %s", item->funcionario.data_admissao); 
+            printf("RG -> %s", item->funcionario.rg_func); 
+            printf("CPF -> %s", item->funcionario.cpf_func);
+            printf("Celular -> %s", item->funcionario.cel_func);
+		printf("Email -> %s", item->funcionario.email_func);  
             item = item->proximo; 
         } 
     }
@@ -136,7 +380,7 @@ void Menu(){
     gotoxy(24,7);printf("| 1 - Cadastro Gênero \n" );
     gotoxy(24,8);printf("| 2 - Cadastro Filmes \n" );
     gotoxy(24,9);printf("| 3 - Cadastro Cliente \n");
-    gotoxy(24,10);printf("| 4 - Cadastro funcionário \n" );
+    gotoxy(24,10);printf("| 4 - Cadastro Funcionário \n" );
     gotoxy(24,11);printf("| 5 - Cadastro Locação \n" );
     gotoxy(24,12);printf("| 6 - Fazer Devolução \n");
     gotoxy(24,13);printf("| 7 - Excluir gênero \n" );
@@ -144,7 +388,7 @@ void Menu(){
     gotoxy(24,15);printf("| 9 - Excluir Cliente \n");
     gotoxy(24,16);printf("| 10 - Excluir Funcionário \n" );
     gotoxy(24,17);printf("| 11 - Excluir Locação \n" );
-    gotoxy(24,18);printf("| 12 - Listar locação data especifica \n");
+    gotoxy(24,18);printf("| 12 - Listar locação data específica \n");
     gotoxy(24,19);printf("| 13 - Listar filmes em atraso \n");
     gotoxy(24,20);printf("| 14 - Listar devolução \n");
     gotoxy(24,21);printf("| 15 - Sair \n" );
@@ -164,37 +408,58 @@ int tamanho (Fila *fila){ /*Retorna o tamanho da fila*/
 
 int main(){   
  	setlocale(LC_ALL,"");
-    Fila *fila = NULL; 
-    int opcao,tam; 
+    Fila *genero = NULL;
+	Fila *filme = NULL; 
+	Fila *cliente = NULL;
+	Fila *funcionario = NULL;
+    int opcao,tam;
+	int auxiliar; 
     int numero;
-    Inicializar(&fila); 
+    Inicializar(&genero);
+	Inicializar(&filme);  
+	Inicializar(&cliente);  
+	Inicializar(&funcionario);
    do{
     Menu(); 
     scanf("%i", &opcao);
 	system("cls");
         switch (opcao){ 
             case 1: 
-                printf( "Digite um numero: "); 
+                printf( "Digite codigo do gênero: "); 
                 scanf("%d", &numero);
-                Inserir(fila, numero); 
-                MostrarFila(fila);
+                Inserir(genero, numero); 
+                MostrarFila(genero);
                 system("pause");
                 break; 
             case 2: 
-                Retirar(fila); 
-                MostrarFila(fila);
-                system("pause");
+            	printf( "Digite codigo do filme: ");
+            	scanf("%d", &numero); 
+            	printf("Digite o codigo do gênero: ");
+            	scanf("%d", &auxiliar);
+				Inserir_Filme(filme, numero, auxiliar); 
+                MostrarFila_Filme(filme);
+            	system("pause");
                 break;          
             case 3: 
-                tam= tamanho(fila); 
-                printf( "Tamanho Fila=%d\n",tam);
-                system("pause");
+            	printf("Digite o codigo do cliente: ");
+            	scanf("%d", &numero);
+				Inserir_cliente(cliente, numero); 
+                MostrarFila_cliente(cliente);
+            	system("pause");
                 break;
-            case 4: 
-                   exit;
-                   break;
+            case 4:
+				printf("Digite o codigo do funcionário: ");
+            	scanf("%d", &numero); 
+            	Inserir_funcionario(funcionario, numero);
+            	MostrarFila_funcionario(funcionario);
+				system("pause");
+                break;
         	case 5:
-        		
+        		MostrarFila_funcionario(funcionario);
+            	MostrarFila(genero);
+            	MostrarFila_Filme(filme);
+                MostrarFila_cliente(cliente);
+                system("pause");
         		break;
         	case 6:
         		
@@ -218,7 +483,11 @@ int main(){
         		
         		break;
         	case 13:
-        		
+        		tam= tamanho(genero); 
+                printf( "Tamanho Fila=%d\n",tam);
+                MostrarFila(genero);
+                MostrarFila_Filme(filme);
+                system("pause");
         		break;
         	case 14:
         		
@@ -227,7 +496,7 @@ int main(){
         		exit;
         		break;	
             default:
-                printf( "Escolha invalida.\n\n"); 
+                printf( "Escolha inválida.\n\n"); 
                 system("pause");
                 break; 
         }    
