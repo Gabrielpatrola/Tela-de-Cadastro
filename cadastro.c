@@ -18,6 +18,29 @@ typedef struct funcionario{
 	struct funcionario *proximo;
 }funcionarios;
 
+typedef struct locacao{
+	int cod_loc;
+	char data_loc[11];
+	char data_devo[11];
+	float valor_total;
+	float juros;
+	float desc;
+	int cod_cliente;
+	int cod_func;
+	char pagamento[8];
+	int cod_filme;
+	struct locacao *proximo;
+}locacoes;
+
+typedef struct devolucao{
+	int cod_loc;
+	char data_loc[11];
+	char data_devo[11];
+	float valor_original;
+	float valor_pago;
+	int dias_atrasados;	
+}devolucoes;
+
 typedef struct cliente{
 	int cod_cliente;
 	char nome_cliente[80];
@@ -51,6 +74,7 @@ typedef struct Item{
     filmes filme;
     clientes cliente;
     funcionarios funcionario;
+    locacoes locacao;
     struct Item *proximo; 
 }Itens;
 
@@ -252,6 +276,50 @@ void Inserir_Filme(Fila *fila, int elemento, int auxiliar){
     } 
 }
 
+void Inserir_locacao(Fila *fila, int elemento, int fun, int clin){ 
+    Itens *novo; 
+    novo = (Itens *)malloc(sizeof(Itens));
+	float valor;
+	int aux; 
+    // -> Verifica se a memória foi alocada com sucesso 
+    if (novo != NULL){ 
+    	fflush(stdin);
+ 		novo->locacao.cod_loc = elemento;  
+ 		novo->locacao.cod_cliente = clin;
+ 		novo->locacao.cod_func = fun;
+		fflush(stdin);	
+		
+    	printf("Digite data de locação:");
+    	fgets(novo->locacao.data_loc, 11, stdin);
+		fflush(stdin);
+		
+		printf("digite data de devolução:");
+    	fgets(novo->locacao.data_devo, 11, stdin);
+		fflush(stdin);
+		
+		printf("digite valor total:");
+		scanf("%f", &valor);
+    	novo->locacao.valor_total = valor;
+		fflush(stdin);
+		
+		printf("Pagamento:");
+		scanf("%f", &valor);
+		fgets(novo->locacao.pagamento, 8, stdin);		
+        novo->proximo = NULL;
+        
+        if(EstaVazia(fila)){ 
+            // -> Primeiro Item da Fila. 
+            fila->inicio = novo; 
+            fila->fim = novo; 
+        } 
+        else{ 
+            // -> Ultimo item da Fila 
+            fila->fim->proximo = novo; 
+            fila->fim=novo; 
+        } 
+    } 
+}
+
 void Retirar(Fila *fila){ 
     Itens *item;
     if(!EstaVazia(fila)) 
@@ -412,13 +480,15 @@ int main(){
 	Fila *filme = NULL; 
 	Fila *cliente = NULL;
 	Fila *funcionario = NULL;
+	Fila *locacao = NULL;
     int opcao,tam;
-	int auxiliar; 
+	int auxiliar, clin, fun; 
     int numero;
     Inicializar(&genero);
 	Inicializar(&filme);  
 	Inicializar(&cliente);  
 	Inicializar(&funcionario);
+	Inicializar(&locacao);
    do{
     Menu(); 
     scanf("%i", &opcao);
@@ -455,39 +525,50 @@ int main(){
 				system("pause");
                 break;
         	case 5:
+				printf("Digite o codigo da locação: ");
+				scanf("%d", &numero);
+				printf("Digite o codigo do cliente: ");
+				scanf("%d", &clin);
+				printf("Digite o codigo do funcionario: ");
+				scanf("%d", &fun);
+				Inserir_locacao(locacao, numero, clin, fun);
+        		break;
+        	case 6:
         		MostrarFila_funcionario(funcionario);
             	MostrarFila(genero);
             	MostrarFila_Filme(filme);
                 MostrarFila_cliente(cliente);
                 system("pause");
         		break;
-        	case 6:
-        		
-        		break;
         	case 7:
-        		
+        		Retirar(genero); 
+        		MostrarFila(genero);
+        		system("pause");
         		break;
         	case 8:
-        		
+        		Retirar(filme); 
+        		MostrarFila_Filme(filme);
+        		system("pause");
         		break;
         	case 9:
-        		
+        		Retirar(cliente); 
+        		MostrarFila_cliente(cliente);
+        		system("pause");
         		break;
         	case 10:
-        		
+        		Retirar(funcionario); 
+        		MostrarFila_funcionario(funcionario);
+        		system("pause");
         		break;
         	case 11:
-        		
+        		Retirar(locacao);
+        		system("pause");
         		break;
         	case 12:
         		
         		break;
         	case 13:
-        		tam= tamanho(genero); 
-                printf( "Tamanho Fila=%d\n",tam);
-                MostrarFila(genero);
-                MostrarFila_Filme(filme);
-                system("pause");
+
         		break;
         	case 14:
         		
