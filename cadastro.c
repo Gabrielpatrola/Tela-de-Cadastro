@@ -6,115 +6,82 @@
 #include <locale.h>   //Para colocar acentos, acrescenta-se o código abaixo  dentro do int main() setlocale(LC_ALL,"");
 #include <conio2.h>   //Para trabalhar com gotoxy(), textcolor(), textbackground(),clrscr()
 
+typedef struct funcionario{
+	int cod_func;
+	char nome_func[80];
+	char nasc_func[11];
+	char rg_func[13];
+	char cpf_func[15];
+	char cel_func[15];
+	char email_func[50];
+	char data_admissao[11];
+	struct funcionario *proximo;
+}funcionarios;
+
+typedef struct locacao{
+	int cod_loc;
+	char data_loc[11];
+	char data_devo[11];
+	float valor_total;
+	float juros;
+	float desc;
+	int cod_cliente;
+	int cod_func;
+	char pagamento[8];
+	int cod_filme;
+	struct locacao *proximo;
+}locacoes;
+
+typedef struct devolucao{
+	int cod_loc;
+	char data_loc[11];
+	char data_devo[11];
+	float valor_original;
+	float valor_pago;
+	int dias_atrasados;	
+	struct devolucao *proximo;
+}devolucoes;
+
+typedef struct cliente{
+	int cod_cliente;
+	char nome_cliente[80];
+	char nasc_cliente[11];
+	char rg_cliente[13];
+	char cpf_cliente[15];
+	char cel_cliente[16];
+	char email_cliente[50];
+	char endereco[80];
+	struct cliente *proximo;
+}clientes;
+
+typedef struct genero{
+	int cod_gen;
+	char nome[80];
+	struct genero *proximo;
+}generos;
+
+typedef struct filme{
+	int cod_filme;
+	int cod_gen;
+	char nome_filme[80];
+	char ano[5];
+	char classificacao[50];
+	float valor;
+	struct filme *proximo;
+}filmes;
+
 typedef struct Node{
  int num;
  struct Node *prox;
 }node; 
 
-
 int tam;
-
-void inicia(node *LISTA);
-int menu(void);
-void opcao(node *LISTA, int op);
-node *criaNo();
-void insereFim(node *LISTA);
-void insereInicio(node *LISTA);
-void exibe(node *LISTA);
-void libera(node *LISTA);
-void insere (node *LISTA);
-node *retiraInicio(node *LISTA);
-node *retiraFim(node *LISTA);
-node *retira(node *LISTA);
-
-
-int main(void){
- 	node *LISTA = (node *) malloc(sizeof(node));
- 	if(!LISTA){
-  		printf("Sem memoria disponivel!\n");
-  		exit(1);
-	}
-	else{
- 		inicia(LISTA);
- 		int opt;
- 		do{
-  			opt=menu();
-  			opcao(LISTA,opt);
- 		}while(opt);
- 		free(LISTA);
- 		return 0;
- 	}
-}
 
 void inicia(node *LISTA){
  	LISTA->prox = NULL;
  	tam=0;
 }
 
-int menu(void){
- 	int opt;
- 	printf("Escolha a opcao\n");
- 	printf("0. Sair\n");
- 	printf("1. Zerar lista\n");
- 	printf("2. Exibir lista\n");
- 	printf("3. Adicionar node no inicio\n");
- 	printf("4. Adicionar node no final\n");
- 	printf("5. Escolher onde inserir\n");
- 	printf("6. Retirar do inicio\n");
- 	printf("7. Retirar do fim\n");
- 	printf("8. Escolher de onde tirar\n");
- 	printf("Opcao: "); 
-	scanf("%d", &opt);
- 	return opt;
-}
-
-void opcao(node *LISTA, int op){
- 	node *tmp;
- 	switch(op){
-  	case 0:
-   		libera(LISTA);
-   	break;
-   
-  	case 1:
-   		libera(LISTA);
-   		inicia(LISTA);
-   	break;
-  
-  	case 2:
-   		exibe(LISTA);
-   	break;
-  
-  	case 3:
-   		insereInicio(LISTA);
-   	break;  
-   
-  	case 4:
-   		insereFim(LISTA);
-   	break;
-   
-  	case 5:
-   		insere(LISTA);
-   	break;
-  
-  	case 6:
-   		tmp= retiraInicio(LISTA);
-   		printf("Retirado: %3d\n\n", tmp->num);
-   	break;
-   
-  	case 7:
-   		tmp= retiraFim(LISTA);
-   		printf("Retirado: %3d\n\n", tmp->num);
-   	break;
-  
-  	case 8:
-   		tmp= retira(LISTA);
-   		printf("Retirado: %3d\n\n", tmp->num);
-   	break;
-  
-  	default:
-   		printf("Comando invalido\n\n");
- 	}
-}
 
 int vazia(node *LISTA){
  	if(LISTA->prox == NULL)
@@ -275,5 +242,88 @@ node *retira(node *LISTA){
 	else{
   		printf("Elemento invalido\n\n");
  	 	return NULL;
+ 	}
+}
+
+int menu(void){
+ 	int opt;
+ 	printf("Escolha a opcao\n");
+ 	printf("0. Sair\n");
+ 	printf("1. Zerar lista\n");
+ 	printf("2. Exibir lista\n");
+ 	printf("3. Adicionar node no inicio\n");
+ 	printf("4. Adicionar node no final\n");
+ 	printf("5. Escolher onde inserir\n");
+ 	printf("6. Retirar do inicio\n");
+ 	printf("7. Retirar do fim\n");
+ 	printf("8. Escolher de onde tirar\n");
+ 	printf("Opcao: "); 
+	scanf("%d", &opt);
+ 	return opt;
+}
+
+void opcao(node *LISTA, int op){
+ 	node *tmp;
+ 	switch(op){
+  	case 0:
+   		libera(LISTA);
+   	break;
+   
+  	case 1:
+   		libera(LISTA);
+   		inicia(LISTA);
+   	break;
+  
+  	case 2:
+   		exibe(LISTA);
+   	break;
+  
+  	case 3:
+   		insereInicio(LISTA);
+   	break;  
+   
+  	case 4:
+   		insereFim(LISTA);
+   	break;
+   
+  	case 5:
+   		insere(LISTA);
+   	break;
+  
+  	case 6:
+   		tmp= retiraInicio(LISTA);
+   		printf("Retirado: %3d\n\n", tmp->num);
+   	break;
+   
+  	case 7:
+   		tmp= retiraFim(LISTA);
+   		printf("Retirado: %3d\n\n", tmp->num);
+   	break;
+  
+  	case 8:
+   		tmp= retira(LISTA);
+   		printf("Retirado: %3d\n\n", tmp->num);
+   	break;
+  
+  	default:
+   		printf("Comando invalido\n\n");
+ 	}
+}
+
+int main(){
+ 	node *LISTA = (node *) malloc(sizeof(node));
+ 	if(!LISTA){
+  		printf("Sem memoria disponivel!\n");
+  		exit(1);
+	}
+	else{
+ 		inicia(LISTA);
+ 		int opt;
+ 		do{
+  			opt=menu();
+  			opcao(LISTA,opt);
+ 		}while(opt);
+ 		free(LISTA);
+ 		return 0;
  	}
 }
