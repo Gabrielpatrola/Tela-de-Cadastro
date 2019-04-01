@@ -39,6 +39,7 @@ typedef struct devolucao{
 	float valor_original;
 	float valor_pago;
 	int dias_atrasados;	
+	struct devolucao *proximo;
 }devolucoes;
 
 typedef struct cliente{
@@ -75,6 +76,7 @@ typedef struct Item{
     clientes cliente;
     funcionarios funcionario;
     locacoes locacao;
+    devolucoes devolucao;
     struct Item *proximo; 
 }Itens;
 
@@ -481,6 +483,7 @@ int main(){
 	Fila *cliente = NULL;
 	Fila *funcionario = NULL;
 	Fila *locacao = NULL;
+	Fila *devolucao = NULL;
     int opcao,tam;
 	int auxiliar, clin, fun; 
     int numero;
@@ -489,6 +492,7 @@ int main(){
 	Inicializar(&cliente);  
 	Inicializar(&funcionario);
 	Inicializar(&locacao);
+	Inicializar(&devolucao);
    do{
     Menu(); 
     scanf("%i", &opcao);
@@ -534,10 +538,7 @@ int main(){
 				Inserir_locacao(locacao, numero, clin, fun);
         		break;
         	case 6:
-        		MostrarFila_funcionario(funcionario);
-            	MostrarFila(genero);
-            	MostrarFila_Filme(filme);
-                MostrarFila_cliente(cliente);
+        
                 system("pause");
         		break;
         	case 7:
