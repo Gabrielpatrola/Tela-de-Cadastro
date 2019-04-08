@@ -117,7 +117,13 @@ generos *aloca(){
         exit(1);
     }
     else{
-        printf("Novo elemento: "); scanf("%d", &novo->cod_gen);
+        printf("Digite o Codigo do Genero: "); 
+		scanf("%d", &novo->cod_gen); 
+		fflush(stdin);
+		
+		printf("Digite o nome do genero:");
+        fgets(novo->nome_genero, 80, stdin);
+        fflush(stdin);
         return novo;
     }
 }
@@ -138,19 +144,10 @@ void exibe(generos *gen){
     }
     generos *tmp;
     tmp = gen->prox;
-    printf("gen:");
     while( tmp != NULL){
-        printf("%5d", tmp->cod_gen);
+        printf("Codigo [%d]\n", tmp->cod_gen);
+        printf("Nome:%s\n", tmp->nome_genero);
         tmp = tmp->prox;
-    }
-    printf("\n        ");
-    int count;
-    for(count=0 ; count < tam ; count++){
-        printf("  ^  ");
-    }
-        printf("\nOrdem:");
-    for(count=0 ; count < tam ; count++){
-        printf("%5d", count+1);
     }
         printf("\n\n");
 }
@@ -234,30 +231,69 @@ generos *retira(generos *gen){
     }
 }
 
+filmes *retiraInicio_filmes(filmes *fil){
+    if(fil->prox == NULL){
+        printf("fil ja esta vazia\n");
+        return NULL;
+    }
+    else{
+        filmes *tmp = fil->prox;
+        fil->prox = tmp->prox;
+        tam--;
+        return tmp;
+    }    
+}
+
+filmes *retira_filmes(filmes *fil){
+    int opt,
+    count;
+    printf("Que posicao, [de 1 ate %d] voce deseja retirar: ", tam);
+    scanf("%d", &opt);
+     
+    if(opt>0 && opt <= tam){
+        if(opt==1)
+            return retiraInicio_filmes(fil);
+        else{
+            filmes *atual = fil->prox,
+            *anterior=fil; 
+            for(count=1 ; count < opt ; count++){
+                anterior=atual;
+                atual=atual->prox;
+            } 
+            anterior->prox=atual->prox;
+            tam--;
+            return atual;
+        }
+     }
+    else{
+        printf("Elemento invalido\n\n");
+        return NULL;
+    }
+}
+
 int menu(){
     int opt;
+    printf("Escolha a opcao\n");
+    printf("0. Sair\n");
+    printf("1. Zerar gen\n");
+    printf("2. Exibir gen\n");
+    printf("3. Adicionar generos no inicio\n");
+    printf("4. Adicionar generos no final\n");
+    printf("5. Escolher onde inserir\n");
+    printf("6. Retirar do inicio\n");
+    printf("7. Retirar do fim\n");
+    printf("8. Escolher de onde tirar\n");
+    printf("Opcao: "); scanf("%d", &opt);
      
-     printf("Escolha a opcao\n");
-     printf("0. Sair\n");
-     printf("1. Zerar gen\n");
-     printf("2. Exibir gen\n");
-     printf("3. Adicionar generos no inicio\n");
-     printf("4. Adicionar generos no final\n");
-     printf("5. Escolher onde inserir\n");
-     printf("6. Retirar do inicio\n");
-     printf("7. Retirar do fim\n");
-     printf("8. Escolher de onde tirar\n");
-     printf("Opcao: "); scanf("%d", &opt);
-     
-     return opt;
-    }
+    return opt;
+}
 
 void opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoes *loc, int op){
     generos *tmp;
     
     switch(op){
     case 0:
-        libera(gen);
+    	libera(gen);
     break;
        
     case 1:
@@ -271,6 +307,7 @@ void opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locaco
           
     case 3:
         insereInicio(gen);
+        exibe(gen);
     break;  
            
     case 4:
@@ -283,7 +320,7 @@ void opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locaco
           
     case 6:
         tmp= retiraInicio(gen);
-        printf("Retirado: %3d\n\n", tmp->cod_gen);
+        //printf("Retirado: %3d\n\n", tmp->cod_gen);
     break;
            
     case 7:
@@ -307,7 +344,7 @@ int main(){
     funcionarios *func = (funcionarios *) malloc(sizeof(funcionarios));
     locacoes *loc = (locacoes *) malloc(sizeof(locacoes));
     
-    if(!gen && !fil && !clin && !func && !loc){
+	if(!gen && !fil && !clin && !func && !loc){
         printf("Sem memoria disponivel!\n");
         exit(1);
     }
