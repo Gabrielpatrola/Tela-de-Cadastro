@@ -71,7 +71,7 @@ typedef struct genero{
 
 typedef struct filme{
     int cod_filme;
-    int cod_gen;
+    int cod_genero;
     char nome_filme[80];
     char ano[5];
     char classificacao[50];
@@ -110,6 +110,12 @@ int vazia(generos *gen){
         return 0;
 }
 
+int vazia_filme(filmes *fil){
+    if(fil->prox == NULL)
+        return 1;
+        else
+        return 0;
+}
 generos *aloca(){
     generos *novo=(generos *) malloc(sizeof(generos));
     if(!novo){
@@ -154,8 +160,7 @@ void exibe(generos *gen){
 
 void libera(generos *gen){
     if(!vazia(gen)){
-        generos *proxgeneros,
-        *atual;
+        generos *proxgeneros, *atual;
         atual = gen->prox;
         while(atual != NULL){
             proxgeneros = atual->prox;
@@ -163,6 +168,119 @@ void libera(generos *gen){
             atual = proxgeneros;
         }
     }
+}
+filmes *aloca_filme(generos *gen){
+	int aux;
+	generos *tmp;
+    filmes *novo=(filmes *) malloc(sizeof(filmes));
+    if(!novo){
+        printf("Sem memoria disponivel!\n");
+        exit(1);
+    }
+    else{
+    	if(vazia(gen) == 0){
+    	printf("Digite o codigo do genero");
+    	scanf("%d", &aux);
+    	tmp = gen->prox;
+    	while( tmp != NULL){
+    		if (tmp->cod_gen == aux){
+    			novo->cod_genero == aux;
+    			printf("Digite o Codigo do filme: "); 
+        		scanf("%d", &novo->cod_filme); 
+        		fflush(stdin);
+        
+        		printf("Digite o nome do filme:");
+        		fgets(novo->nome_filme, 80, stdin);
+       			fflush(stdin);
+        
+				printf("Digite o ano do filme:");
+       		 	fgets(novo->ano, 5, stdin);
+        		fflush(stdin);
+        
+        		printf("Digite a classifiacação do filme:");
+        		fgets(novo->classificacao, 50, stdin);
+        		fflush(stdin);
+
+				printf("Digite o valor do filme: "); 
+        		scanf("%f", &novo->valor); 
+        		fflush(stdin);
+			}tmp = tmp->prox;
+			else{
+				printf("erro no codigo");
+			}
+		}
+		printf("erro");
+		system("pause");	
+    }
+        return novo;
+    }
+}
+
+void insereInicio_filme(filmes *fil, generos *gen){
+    filmes *novo=aloca_filme(gen); 
+    filmes *oldHead = fil->prox;
+    fil->prox = novo;
+    novo->prox = oldHead;
+    tam++;
+}
+
+void exibe_filme(filmes *fil){
+    system("cls");
+    if(vazia_filme(fil)){
+        printf("filme vazio!\n\n");
+        return;
+    }
+    filmes *ptr;
+    ptr = fil->prox;
+    while( ptr != NULL){
+        printf("\nCodigo do filme [%d]\n", ptr->cod_filme);
+        printf("Nome do filme:%s", ptr->nome_filme);
+        printf("Codigo do Genero:%s", ptr->cod_genero);
+        printf("Ano: [%s]", ptr->ano);
+        printf("\nClassificação: %s", ptr->classificacao);
+        printf("Valor: %.5f", ptr->valor);
+        ptr = ptr->prox;
+    }
+        printf("\n\n");
+}
+
+void libera_filme(filmes *fil){
+    if(!vazia_filme(fil)){
+        filmes *proxfilmes,
+        *atual;
+        atual = fil->prox;
+        while(atual != NULL){
+            proxfilmes = atual->prox;
+            free(atual);
+            atual = proxfilmes;
+        }
+    }
+}
+
+void insere_filme(filmes *fil, generos *gen){
+    int pos,
+    count;
+    printf("Em que posicao, [de 1 ate %d] voce deseja inserir: ", tam);
+    scanf("%d", &pos);
+     
+    if(pos>0 && pos <= tam){
+        if(pos==1)
+            insereInicio_filme(fil, gen);
+        else{
+            filmes *atual = fil->prox,
+            *anterior=fil; 
+            filmes *novo=aloca_filme(gen);
+            for(count=1 ; count < pos ; count++){
+                anterior=atual;
+                atual=atual->prox;
+            }
+            anterior->prox=novo;
+            novo->prox = atual;
+            tam++;
+        }  
+     }
+    else
+        printf("Elemento invalido\n\n");  
 }
 
 void insere(generos *gen){
@@ -290,6 +408,7 @@ int menu(){
 
 void opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoes *loc, int op){
     generos *tmp;
+    filmes *ptr;
     
     switch(op){
     case 0:
@@ -311,7 +430,8 @@ void opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locaco
     break;  
            
     case 4:
-
+		insereInicio_filme(fil, gen);
+        exibe_filme(fil);
     break;
            
     case 5:
