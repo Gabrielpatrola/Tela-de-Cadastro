@@ -1,3 +1,9 @@
+Cliente: codcli, nome, rg, cpf, emial,cel, endereço,data nasc
+
+Funcionário: codfunc, nome, data nasc, rg, cpf,cel, email, dataadm
+
+Locação: codlocacao,codcli,dataloca, datadevo,valortotal,juro,desc,codcliente,codfunc,pagamento
+
 Pagamento deve ser char e guardar o tipo de pagamento. 1- a vista 2 - prazo
 
 Data de devolução são de 3 dias até 3 filmes e 4 dias mais de 3 filmes
