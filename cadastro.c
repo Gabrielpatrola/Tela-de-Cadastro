@@ -879,60 +879,69 @@ locacoes *aloca_locacao(filmes *fil, clientes *clin, funcionarios *func){
     else{
     	inicio:
     	system("cls");
-    	printf("Digite o codigo do filme");
+    	 for(int i=24;i<90;i++){
+			gotoxy(i,12);printf("-"); //For para o prenchimento da parte inferior do menu
+		}        
+		for(int i=6;i<12;i++){
+			gotoxy(90,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		for(int i=6;i<12;i++){
+			gotoxy(23,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		gotoxy(24,5);printf("---------------------------- LOCAÇÃO------------------------------");
+    	gotoxy(25,6);printf("Digite o codigo do filme");
     	scanf("%d", &aux);
     	filmeExiste(fil, aux);
   		novo->valor_total = filmeExiste(fil, aux);
     	if(filmeExiste(fil, aux) >= 1){
 			novo->cod_fil = aux;
 			cliente:	
-		 	printf("Digite o Codigo do Cliente:"); 
+		 	gotoxy(25,6);printf("Digite o Codigo do Cliente:"); 
         	scanf("%d", &aux);
         	fflush(stdin);
         	if(clienteExiste(clin, aux) == 1){
         		novo->cod_clin = aux;
         		funcionario:
-        		printf("Digite o Codigo do Funcionario:");
+        		gotoxy(25,6);printf("Digite o Codigo do Funcionario:");
         		scanf("%d", &aux);
         		fflush(stdin);
         		funcionarioExiste(func, aux);
         		if(funcionarioExiste(func, aux) == 1){
         			novo->cod_func = aux;
-        			gotoxy(24,5);printf("---------------------------- LOCAÇÃO-------------------------");
-    				gotoxy(25,6);printf("Digite o Codigo da locação: ");
+    				gotoxy(25,7);printf("Digite o Codigo da locação: ");
 					scanf("%d", &novo->cod_loc); 
         			fflush(stdin);
         
-        			gotoxy(25,7);printf("Digite a data de locação:");
+        			gotoxy(25,8);printf("Digite a data de locação:");
         			fgets(novo->data_loc, 11, stdin);
        				fflush(stdin);
         
-					gotoxy(25,8);printf("Digite a data de devolução:");
+					gotoxy(25,9);printf("Digite a data de devolução:");
        				fgets(novo->data_devo, 11, stdin);
         			fflush(stdin);
         
-        			gotoxy(25,9);printf("Digite o pagamento:");
+        			gotoxy(25,10);printf("Digite o pagamento:");
         			fgets(novo->pagamento, 8, stdin);
         			fflush(stdin);
         		
-        			gotoxy(25,14);system("pause");	
+        			gotoxy(25,11);system("pause");	
 				}
 				else{
-					printf("Erro no codigo de funcionario\n");
+					gotoxy(25,6);printf("Erro no codigo de funcionario\n");
 					system("pause");
 					system("cls");
 					goto funcionario;
 				}
 			}
      		else{
-     			printf("Codigo de cliente invalido!\n");
+     			gotoxy(25,6);printf("Codigo de cliente invalido!\n");
      			system("pause");
      			system("cls");
      			goto cliente;
 			 }
 		}
        else{
-       	printf("Codigo de Filme invalido!\n");
+       	gotoxy(25,6);printf("Codigo de Filme invalido!\n");
        	system("pause");
        	goto inicio;
 	   }
@@ -1025,13 +1034,46 @@ devolucoes *aloca_devolucao(locacoes *loc){
         exit(1);
     }
     else{
- 		printf("Digite o codigo da locação: ");
+    	system("cls");
+    	for(int i=24;i<90;i++){
+			gotoxy(i,13);printf("-"); //For para o prenchimento da parte inferior do menu
+		}        
+		for(int i=6;i<13;i++){
+			gotoxy(90,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		for(int i=6;i<13;i++){
+			gotoxy(23,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		gotoxy(24,5);printf("---------------------------- DEVOLUCAO -------------------------");
+ 		gotoxy(25,6);printf("Digite o codigo da locação: ");
  		scanf("%d", &aux);
  		locacaoExiste(loc,aux);
  		if (locacaoExiste(loc,aux) == 1){
- 			
- 			
-		 }
+    	gotoxy(25,6);printf("Digite o Codigo da devolucao: ");
+		scanf("%d", &novo->cod_loc); 
+        fflush(stdin);
+        
+        gotoxy(25,7);printf("Digite a data de locacao:");
+        fgets(novo->data_loc, 11, stdin);
+       	fflush(stdin);
+        
+		gotoxy(25,8);printf("Digite a data de devolucao:");
+       	fgets(novo->data_devo, 11, stdin);
+        fflush(stdin);
+        
+        gotoxy(25,9);printf("Digite o valor original:");
+        scanf("%f", &novo->valor_original); 
+        fflush(stdin);
+
+		gotoxy(25,10);printf("Digite o valor pago: "); 
+        scanf("%f", &novo->valor_pago); 
+        fflush(stdin);
+        
+        gotoxy(25,11);printf("Digite os dias atrasados: "); 
+        scanf("%d", &novo->dias_atrasados);
+        fflush(stdin);
+        gotoxy(25,12);system("pause");
+		}
  		else{
  			printf("Codigo de locacao invalido");
 		 }
@@ -1050,15 +1092,32 @@ void insereInicio_devolucao(devolucoes *devo, locacoes *loc){
 void exibe_devolucao(devolucoes *devo){
     system("cls");
     if(vazia_devolucao(devo)){
-        printf("loc vazia!\n\n");
-        return;
+    	gotoxy(24,5);printf("---------------------------- DEVOLUCOES ----------------------------");
+        gotoxy(24,6);printf("Devoluções vazia!");
+		gotoxy(24,7);system("pause");       
+		return;
     }
     devolucoes *ptr;
     ptr = devo->prox;
     while( ptr != NULL){
-        //printf("Codigo [%d]\n", ptr->cod_locme);
-        //printf("Nome:%s\n", ptr->nome_locme);
+       for(int i=24;i<90;i++){
+			gotoxy(i,13);printf("-"); //For para o prenchimento da parte inferior do menu
+		}        
+		for(int i=6;i<13;i++){
+			gotoxy(90,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		for(int i=6;i<13;i++){
+			gotoxy(23,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+    	gotoxy(24,5);printf("---------------------------- DEVOLUCOES ----------------------------");
+        gotoxy(25,6);printf("Codigo [ %d ]", ptr->cod_loc);
+        gotoxy(25,7);printf("Data Locação: %s", ptr->data_loc);
+        gotoxy(25,8);printf("Data Devolucao : %s", ptr->data_devo);
+        gotoxy(25,9);printf("Valor Original : %f", ptr->valor_original);
+        gotoxy(25,10);printf("Valor Pago :  %f", ptr->valor_pago);
+        gotoxy(25,11);printf("Dias atrasados : %d", ptr->dias_atrasados);
         ptr = ptr->prox;
+        gotoxy(25,12);system("pause");
     }
         printf("\n\n");
 }
@@ -1152,8 +1211,7 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 					goto inicio;
 				break;
 				case 11:
-					exibe_locacao(loc);
-					retira_locacoes(loc);
+					insereInicio_devolucao(devo, loc);
 					system("pause");
 					goto inicio;
 				break;	
