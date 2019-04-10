@@ -7,13 +7,26 @@ RGA: 201611901002
 Data Entrega:
 *************************************************************************/
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include <string.h>
-#include <ctype.h>    //Contêm funções para manipulação de caracteres
-#include <locale.h>   //Para colocar acentos, acrescenta-se o código abaixo  dentro do int main() setlocale(LC_ALL,"");
-#include <conio2.h>   //Para trabalhar com gotoxy(), textcolor(), textbackground(),clrscr()
+#include <stdio.h>
+#include <ctype.h>
+#include <conio.h>
+#include <conio2.h>
+#include <windows.h>
+#include <locale.h> // Para colocar acentos, acrescenta-se o código abaixo dentro do int main setlocale(LC_ALL,"")
+
+//defines para o controle nos menus
+#define ACIMA 72
+#define ABAIXO 80
+#define ENTER 13
+#define ESC 27
+
+void gotoxy( int x, int y ){
+	COORD coord;
+	coord.X = (short)x;
+	coord.Y = (short)y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
 
 typedef struct funcionario{
     int cod_func;
@@ -85,7 +98,6 @@ void inicia(generos *gen){
     gen->prox = NULL;
     tam=0;
 }
-
 void inicia_filme(filmes *fil){
     fil->prox = NULL;
     tam=0;
@@ -116,6 +128,14 @@ int vazia_filme(filmes *fil){
         else
         return 0;
 }
+
+int vazia_cliente(clientes *clin){
+    if(clin->prox == NULL)
+        return 1;
+        else
+        return 0;
+}
+
 generos *aloca(){
     generos *novo=(generos *) malloc(sizeof(generos));
     if(!novo){
@@ -123,11 +143,15 @@ generos *aloca(){
         exit(1);
     }
     else{
-        printf("Digite o Codigo do Genero: "); 
-		scanf("%d", &novo->cod_gen); 
+    	gotoxy(24,8);printf("------------------------------------------------------------");
+    	gotoxy(23,7);printf("|");
+		gotoxy(84,7);printf("|");
+    	gotoxy(24,5);printf("---------------------------- MENU---------------------------");
+        gotoxy(23,6);printf("| Digite o Codigo do Genero:                                 |"); 
+		gotoxy(51,6);scanf("%d", &novo->cod_gen); 
 		fflush(stdin);
-		
-		printf("Digite o nome do genero:");
+	
+		gotoxy(25,7);printf("Digite o nome do genero:");
         fgets(novo->nome_genero, 80, stdin);
         fflush(stdin);
         return novo;
@@ -145,15 +169,29 @@ void insereInicio(generos *gen){
 void exibe(generos *gen){
     system("cls");
     if(vazia(gen)){
-        printf("gen vazia!\n\n");
+    	gotoxy(24,5);printf("---------------------------- MENU---------------------------");
+        gotoxy(23,6);printf("| Lista de gêneros vazia!                                    |");
+        gotoxy(23,7);printf("|");
+		gotoxy(84,7);printf("|");
+        gotoxy(24,8);printf("------------------------------------------------------------");
+       	gotoxy(25,7);system("pause");
         return;
     }
     generos *tmp;
     tmp = gen->prox;
     while( tmp != NULL){
-        printf("Codigo [%d]\n", tmp->cod_gen);
-        printf("Nome:%s\n", tmp->nome_genero);
+    	gotoxy(24,9);printf("------------------------------------------------------------");
+    	gotoxy(23,6);printf("|");
+		gotoxy(84,6);printf("|");
+    	gotoxy(23,7);printf("|");
+		gotoxy(84,7);printf("|");
+		gotoxy(23,8);printf("|");
+		gotoxy(84,8);printf("|");
+    	gotoxy(24,5);printf("---------------------------- MENU---------------------------");
+        gotoxy(25,6);printf("Codigo [%d]\n", tmp->cod_gen);
+        gotoxy(25,7);printf("Nome:%s\n", tmp->nome_genero);
         tmp = tmp->prox;
+        gotoxy(25,8);system("pause");
     }
         printf("\n\n");
 }
@@ -169,6 +207,20 @@ void libera(generos *gen){
         }
     }
 }
+
+//funcao para checar se o genero existe antes de registrar o filme
+int generoExiste(generos *gen, int cod_gen){
+    generos *tmp;
+	tmp = gen->prox;
+	while(tmp != NULL) {
+		if(tmp->cod_gen == cod_gen)
+			return 1;
+		else
+		   tmp = tmp->prox;
+	}
+    return 0;
+}
+
 filmes *aloca_filme(generos *gen){
 	int aux;
 	generos *tmp;
@@ -178,42 +230,61 @@ filmes *aloca_filme(generos *gen){
         exit(1);
     }
     else{
-    	if(vazia(gen) == 0){
-    	printf("Digite o codigo do genero");
+    	system("cls");
+    	for(int i=24;i<90;i++){
+			gotoxy(i,12);printf("-"); //For para o prenchimento da parte inferior do menu
+		}        
+		for(int i=6;i<12;i++){
+			gotoxy(90,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		for(int i=6;i<12;i++){
+			gotoxy(23,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+    	gotoxy(24,5);printf("---------------------------- FILMES ------------------------------");
+		gotoxy(25,6);printf("Digite o codigo do genero:");
     	scanf("%d", &aux);
-    	tmp = gen->prox;
-    	while( tmp != NULL){
-    		if (tmp->cod_gen == aux){
-    			novo->cod_genero == aux;
-    			printf("Digite o Codigo do filme: "); 
-        		scanf("%d", &novo->cod_filme); 
-        		fflush(stdin);
+    	generoExiste(gen, aux);
+    	if(generoExiste(gen, aux) == 1){
+			novo->cod_genero = aux;
+			system("cls");
+			for(int i=24;i<90;i++){
+				gotoxy(i,12);printf("-"); //For para o prenchimento da parte inferior do menu
+			}        
+			for(int i=6;i<12;i++){
+				gotoxy(90,i);printf("|"); //For para o prenchimento da parte lateral do menu
+			} 
+			for(int i=6;i<12;i++){
+				gotoxy(23,i);printf("|"); //For para o prenchimento da parte lateral do menu
+			} 
+			gotoxy(24,5);printf("---------------------------- FILMES ------------------------------");
+    		gotoxy(25,6);printf("Digite o Codigo do filme: ");
+			scanf("%d", &novo->cod_filme); 
+        	fflush(stdin);
         
-        		printf("Digite o nome do filme:");
-        		fgets(novo->nome_filme, 80, stdin);
-       			fflush(stdin);
+        	gotoxy(25,7);printf("Digite o nome do filme:");
+        	fgets(novo->nome_filme, 80, stdin);
+       		fflush(stdin);
         
-				printf("Digite o ano do filme:");
-       		 	fgets(novo->ano, 5, stdin);
-        		fflush(stdin);
+			gotoxy(25,8);printf("Digite o ano do filme:");
+       		fgets(novo->ano, 5, stdin);
+        	fflush(stdin);
         
-        		printf("Digite a classifiacação do filme:");
-        		fgets(novo->classificacao, 50, stdin);
-        		fflush(stdin);
+        	gotoxy(25,9);printf("Digite a classifiacação do filme:");
+        	fgets(novo->classificacao, 50, stdin);
+        	fflush(stdin);
 
-				printf("Digite o valor do filme: "); 
-        		scanf("%f", &novo->valor); 
-        		fflush(stdin);
-			}tmp = tmp->prox;
-			else{
-				printf("erro no codigo");
-			}
+			gotoxy(25,10);printf("Digite o valor do filme: "); 
+        	scanf("%f", &novo->valor); 
+        	fflush(stdin);
+        	gotoxy(25,11);system("pause");
 		}
-		printf("erro");
-		system("pause");	
+		else{
+			system("cls");
+			printf("Codigo do Genero Invalido!\n");
+			system("pause");
+		}
     }
         return novo;
-    }
 }
 
 void insereInicio_filme(filmes *fil, generos *gen){
@@ -224,24 +295,40 @@ void insereInicio_filme(filmes *fil, generos *gen){
     tam++;
 }
 
+
 void exibe_filme(filmes *fil){
     system("cls");
     if(vazia_filme(fil)){
-        printf("filme vazio!\n\n");
+        gotoxy(24,5);printf("---------------------------- FILMES ---------------------------");
+        gotoxy(23,6);printf("| Lista de filmes vazia!                                        |");
+        gotoxy(23,7);printf("|");
+		gotoxy(87,7);printf("|");
+        gotoxy(24,8);printf("---------------------------------------------------------------");
+       	gotoxy(25,7);system("pause");
         return;
     }
     filmes *ptr;
     ptr = fil->prox;
     while( ptr != NULL){
-        printf("\nCodigo do filme [%d]\n", ptr->cod_filme);
-        printf("Nome do filme:%s", ptr->nome_filme);
-        printf("Codigo do Genero:%s", ptr->cod_genero);
-        printf("Ano: [%s]", ptr->ano);
-        printf("\nClassificação: %s", ptr->classificacao);
-        printf("Valor: %.5f", ptr->valor);
+    	for(int i=24;i<90;i++){
+			gotoxy(i,13);printf("-"); //For para o prenchimento da parte inferior do menu
+		}        
+		for(int i=6;i<13;i++){
+			gotoxy(90,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		for(int i=6;i<13;i++){
+			gotoxy(23,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+    	gotoxy(24,5);printf("---------------------------- FILMES ------------------------------");
+        gotoxy(25,6);printf("Codigo do filme [ %d ]", ptr->cod_filme);
+        gotoxy(25,7);printf("Nome do filme: %s", ptr->nome_filme);
+       	gotoxy(25,8);printf("Codigo do Genero: %i", ptr->cod_genero);
+        gotoxy(25,9);printf("Ano: %s ", ptr->ano);
+        gotoxy(25,10);printf("Classificação: %s", ptr->classificacao);
+        gotoxy(25,11);printf("Valor: %.5f", ptr->valor);
         ptr = ptr->prox;
+        gotoxy(25,12);system("pause");
     }
-        printf("\n\n");
 }
 
 void libera_filme(filmes *fil){
@@ -388,76 +475,187 @@ filmes *retira_filmes(filmes *fil){
         return NULL;
     }
 }
-
-int menu(){
-    int opt;
-    printf("Escolha a opcao\n");
-    printf("0. Sair\n");
-    printf("1. Zerar gen\n");
-    printf("2. Exibir gen\n");
-    printf("3. Adicionar generos no inicio\n");
-    printf("4. Adicionar generos no final\n");
-    printf("5. Escolher onde inserir\n");
-    printf("6. Retirar do inicio\n");
-    printf("7. Retirar do fim\n");
-    printf("8. Escolher de onde tirar\n");
-    printf("Opcao: "); scanf("%d", &opt);
-     
-    return opt;
-}
-
-void opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoes *loc, int op){
-    generos *tmp;
-    filmes *ptr;
-    
-    switch(op){
-    case 0:
-    	libera(gen);
-    break;
-       
-    case 1:
-        libera(gen);
-        inicia(gen);
-    break;
-          
-    case 2:
-        exibe(gen);
-    break;
-          
-    case 3:
-        insereInicio(gen);
-        exibe(gen);
-    break;  
-           
-    case 4:
-		insereInicio_filme(fil, gen);
-        exibe_filme(fil);
-    break;
-           
-    case 5:
-        insere(gen);
-    break;
-          
-    case 6:
-        tmp= retiraInicio(gen);
-        //printf("Retirado: %3d\n\n", tmp->cod_gen);
-    break;
-           
-    case 7:
-
-    break;
-          
-    case 8:
-        tmp= retira(gen);
-        printf("Retirado: %3d\n\n", tmp->cod_gen);
-    break;
-          
-    default:
-        printf("Comando invalido\n\n");
+clientes *aloca_cliente(){
+    clientes *novo=(clientes *) malloc(sizeof(clientes));
+    if(!novo){
+        printf("Sem memoria disponivel!\n");
+        exit(1);
+    }
+    else{
+    	system("cls");
+    	for(int i=24;i<90;i++){
+			gotoxy(i,15);printf("-"); //For para o prenchimento da parte inferior do menu
+		}        
+		for(int i=6;i<15;i++){
+			gotoxy(90,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		for(int i=6;i<15;i++){
+			gotoxy(23,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+    	gotoxy(24,5);printf("---------------------------- Clientes ----------------------------");
+    	gotoxy(25,6);printf("Digite o Codigo do Cliente:");
+        scanf("%d", &novo->cod_cliente); 
+        fflush(stdin);
+        
+        gotoxy(25,7);printf("Digite o nome do cliente:");
+        fgets(novo->nome_cliente, 80, stdin);
+        fflush(stdin);
+        
+        gotoxy(25,8);printf("Digite a data de nascimento:");
+        fgets(novo->nasc_cliente, 11, stdin);
+        fflush(stdin);
+        
+        gotoxy(25,9);printf("Digite o RG do cliente:");
+        fgets(novo->rg_cliente, 13, stdin);
+        fflush(stdin);
+        
+        gotoxy(25,10);printf("Digite o CPF do cliente:");
+        fgets(novo->cpf_cliente, 15, stdin);
+        fflush(stdin);
+        
+        gotoxy(25,11);printf("Digite o celular do cliente:");
+        fgets(novo->cel_cliente, 16, stdin);
+        fflush(stdin);
+        
+		gotoxy(25,12);printf("Digite o email do cliente:");
+        fgets(novo->email_cliente, 50, stdin);
+        fflush(stdin);
+        
+        gotoxy(25,13);printf("Digite o endereço do cliente:");
+        fgets(novo->endereco, 50, stdin);
+        fflush(stdin);
+        gotoxy(25,14);system("pause");
+        return novo;
     }
 }
 
+void insereInicio_cliente(clientes *clin){
+    clientes *novo=aloca_cliente(); 
+    clientes *oldHead = clin->prox;
+    clin->prox = novo;
+    novo->prox = oldHead;
+    tam++;
+}
+
+void exibe_cliente(clientes *clin){
+    system("cls");
+    if(vazia_cliente(clin)){
+    	gotoxy(24,5);printf("---------------------------- Clientes -------------------------");
+        gotoxy(23,6);printf("| lista de Clientes vazia!                                      |");
+        gotoxy(23,7);printf("|");
+		gotoxy(87,7);printf("|");
+        gotoxy(24,8);printf("---------------------------------------------------------------");
+        gotoxy(25,7);system("pause");
+        return;
+    }
+    clientes *ptr;
+    ptr = clin->prox;
+    while( ptr != NULL){
+    	for(int i=24;i<90;i++){
+			gotoxy(i,15);printf("-"); //For para o prenchimento da parte inferior do menu
+		}        
+		for(int i=6;i<15;i++){
+			gotoxy(90,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		for(int i=6;i<15;i++){
+			gotoxy(23,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+    	gotoxy(24,5);printf("---------------------------- Clientes ----------------------------");
+        gotoxy(25,6);printf("Codigo [ %d ]", ptr->cod_cliente);
+        gotoxy(25,7);printf("Nome : %s", ptr->nome_cliente);
+        gotoxy(25,8);printf("Nascimento : %s", ptr->nasc_cliente);
+        gotoxy(25,9);printf("RG : %s", ptr->rg_cliente);
+        gotoxy(25,10);printf("CPF :  %s", ptr->cpf_cliente);
+        gotoxy(25,11);printf("Celular : %s", ptr->cel_cliente);
+        gotoxy(25,12);printf("E-mail : %s", ptr->email_cliente);
+        gotoxy(25,13);printf("Endereço : %s", ptr->endereco);
+        ptr = ptr->prox;
+        gotoxy(25,14);system("pause");
+    }
+}
+
+void libera_cliente(clientes *clin){
+    if(!vazia_cliente(clin)){
+        clientes *proxclientes,
+        *atual;
+        atual = clin->prox;
+        while(atual != NULL){
+            proxclientes = atual->prox;
+            free(atual);
+            atual = proxclientes;
+        }
+    }
+}
+
+int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoes *loc){
+    generos *tmp;
+    filmes *ptr;
+   	system("cls");
+   	int posicao = 6, tecla;	
+	inicio:
+		do{
+			system("cls");
+			gotoxy(24,15);printf("------------------------------ CONTROLES --------------------------------");
+			gotoxy(23,16);printf("| Use as setas para cima e para baixo do teclado para navegar no menu     |");
+			gotoxy(23,17);printf("| Aperte ENTER para selecionar a opção desejada                           |");
+				for(int i=24;i<97;i++){
+					gotoxy(i,18);printf("-"); //For para o prenchimento da parte inferior do menu
+				}
+			gotoxy(24,5);printf("---------------------------- MENU---------------------------");
+			gotoxy(23,6);printf("|                     Cadastro Gênero                        |");
+			gotoxy(23,7);printf("|                     Cadastro Filme                         |");
+			gotoxy(23,8);printf("|                     Cadastro Cliente                       |");
+			gotoxy(23,9);printf("|                     Cadastro Funcionário                   |");
+			gotoxy(23,10);printf("|                     Cadastro Locação                       |");
+				for(int i=24;i<84;i++){
+					gotoxy(i,11);printf("-"); //For para o prenchimento da parte inferior do menu
+				}
+			gotoxy(24,posicao);printf("%c%c",62,62);gotoxy(82,posicao);printf("%c%c",60,60);  //setinhas de seleção
+			tecla=getch();
+				if(tecla == ABAIXO){
+					posicao=posicao+1;
+					if(posicao==11){
+						posicao=6;
+					}
+				}
+				if (tecla == ACIMA){
+					posicao=posicao-1;
+					if(posicao==5){
+						posicao=10;
+					}
+				}
+		}while(tecla!= ENTER);
+			switch (posicao){
+				case 6:
+					system("cls");
+	 				insereInicio(gen);
+        			exibe(gen);
+        			goto inicio;
+				break;
+				case 7:
+					insereInicio_filme(fil, gen);
+        			exibe_filme(fil);
+        			goto inicio;
+				break;
+				case 8:
+					insereInicio_cliente(clin);
+        			exibe_cliente(clin);
+        			goto inicio;
+				break;
+				case 9:
+					//sobre(); //chamada para o sub menu "sobre"
+				break;
+				case 10:
+					return 0; //sair do programa
+				break;	
+			}	
+	return posicao;
+} 
+
+
 int main(){
+	system("Color 1A");
+	setlocale(LC_ALL,"");
     generos *gen = (generos *) malloc(sizeof(generos));
     filmes *fil = (filmes *) malloc(sizeof(filmes));
     clientes *clin = (clientes *) malloc(sizeof(clientes));
@@ -474,13 +672,13 @@ int main(){
         inicia_cliente(clin);
         inicia_funcionario(func);
         inicia_locacao(loc);
-        int opt;
-        do{
-        	opt=menu();
-            opcao(gen, fil, clin, func, loc,opt);
-        }while(opt);
+ 		opcao(gen, fil, clin, func, loc);
+    
         free(gen);
         free(fil);
+        free(clin);
+        free(func);
+        free(loc);
         return 0;
     }
 }
