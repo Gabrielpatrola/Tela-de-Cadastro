@@ -93,7 +93,7 @@ typedef struct filme{
 }filmes;
 
 int tam;
-
+int tam_loc;
 void inicia(generos *gen){
     gen->prox = NULL;
     tam=0;
@@ -138,6 +138,13 @@ int vazia_cliente(clientes *clin){
 
 int vazia_funcionario(funcionarios *func){
     if(func->prox == NULL)
+        return 1;
+        else
+        return 0;
+}
+
+int vazia_locacao(locacoes*loc){
+    if(loc->prox == NULL)
         return 1;
         else
         return 0;
@@ -227,6 +234,43 @@ int generoExiste(generos *gen, int cod_gen){
 	}
     return 0;
 }
+
+int clienteExiste(clientes *clin, int cod_cliente){
+    clientes *tmp;
+	tmp = clin->prox;
+	while(tmp != NULL) {
+		if(tmp->cod_cliente == cod_cliente)
+			return 1;
+		else
+		   tmp = tmp->prox;
+	}
+    return 0;
+}
+
+int funcionarioExiste(funcionarios *func, int cod_func){
+    funcionarios *tmp;
+	tmp = func->prox;
+	while(tmp != NULL) {
+		if(tmp->cod_func == cod_func)
+			return 1;
+		else
+		   tmp = tmp->prox;
+	}
+    return 0;
+}
+
+int filmeExiste(filmes *fil, int cod_filme){
+    filmes *tmp;
+	tmp = fil->prox;
+	while(tmp != NULL) {
+		if(tmp->cod_filme == cod_filme)
+			return 1;
+		else
+		   tmp = tmp->prox;
+	}
+    return 0;
+}
+
 
 filmes *aloca_filme(generos *gen){
 	int aux;
@@ -703,6 +747,86 @@ void libera_funcionario(funcionarios *func){
     }
 }
 
+locacoes *aloca_locacao(){
+    locacoes *novo=(locacoes *) malloc(sizeof(locacoes));
+    if(!novo){
+        printf("Sem memoria disponivel!\n");
+        exit(1);
+    }
+    else{
+        printf("Digite o Codigo do locero: "); 
+        //scanf("%d", &novo->cod_loc); 
+        fflush(stdin);
+        
+        printf("Digite o nome do locero:");
+        //fgets(novo->nome_locero, 80, stdin);
+        fflush(stdin);
+        return novo;
+    }
+}
+
+void insereInicio_locacao(locacoes *loc){
+    locacoes *novo=aloca_locacao(); 
+    locacoes *oldHead = loc->prox;
+    loc->prox = novo;
+    novo->prox = oldHead;
+    tam_loc++;
+}
+
+void exibe_locacao(locacoes *loc){
+    system("cls");
+    if(vazia_locacao(loc)){
+        printf("loc vazia!\n\n");
+        return;
+    }
+    locacoes *ptr;
+    ptr = loc->prox;
+    while( ptr != NULL){
+        //printf("Codigo [%d]\n", ptr->cod_locme);
+        //printf("Nome:%s\n", ptr->nome_locme);
+        ptr = ptr->prox;
+    }
+        printf("\n\n");
+}
+
+void libera_locacao(locacoes *loc){
+    if(!vazia_locacao(loc)){
+        locacoes *proxlocacoes,
+        *atual;
+        atual = loc->prox;
+        while(atual != NULL){
+            proxlocacoes = atual->prox;
+            free(atual);
+            atual = proxlocacoes;
+        }
+    }
+}
+
+void insere_locacao(locacoes *loc){
+    int pos,
+    count;
+    printf("Em que posicao, [de 1 ate %d] voce deseja inserir: ", tam_loc);
+    scanf("%d", &pos);
+     
+    if(pos>0 && pos <= tam_loc){
+        if(pos==1)
+            insereInicio_locacao(loc);
+        else{
+            locacoes *atual = loc->prox,
+            *anterior=loc; 
+            locacoes *novo=aloca_locacao();
+            for(count=1 ; count < pos ; count++){
+                anterior=atual;
+                atual=atual->prox;
+            }
+            anterior->prox=novo;
+            novo->prox = atual;
+            tam_loc++;
+        }  
+     }
+    else
+        printf("Elemento invalido\n\n");  
+}
 
 int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoes *loc){
     generos *tmp;
@@ -712,11 +836,11 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 	inicio:
 		do{
 			system("cls");
-			gotoxy(24,15);printf("------------------------------ CONTROLES --------------------------------");
-			gotoxy(23,16);printf("| Use as setas para cima e para baixo do teclado para navegar no menu     |");
-			gotoxy(23,17);printf("| Aperte ENTER para selecionar a opção desejada                           |");
+			gotoxy(24,22);printf("------------------------------ CONTROLES --------------------------------");
+			gotoxy(23,23);printf("| Use as setas para cima e para baixo do teclado para navegar no menu     |");
+			gotoxy(23,24);printf("| Aperte ENTER para selecionar a opção desejada                           |");
 				for(int i=24;i<97;i++){
-					gotoxy(i,18);printf("-"); //For para o prenchimento da parte inferior do menu
+					gotoxy(i,25);printf("-"); //For para o prenchimento da parte inferior do menu
 				}
 			gotoxy(24,5);printf("---------------------------- MENU---------------------------");
 			gotoxy(23,6);printf("|                     Cadastro Gênero                        |");
@@ -724,21 +848,30 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 			gotoxy(23,8);printf("|                     Cadastro Cliente                       |");
 			gotoxy(23,9);printf("|                     Cadastro Funcionário                   |");
 			gotoxy(23,10);printf("|                     Cadastro Locação                       |");
+			gotoxy(23,11);printf("|                     Fazer Devolução                        |");
+			gotoxy(23,12);printf("|                     Excluir Gênero                         |");
+			gotoxy(23,13);printf("|                     Excluir Filme                          |");
+			gotoxy(23,14);printf("|                     Excluir Cliente                        |");
+			gotoxy(23,15);printf("|                     Excluir Funcionário                    |");
+			gotoxy(23,16);printf("|                     Excluir Locação                        |");
+			gotoxy(23,17);printf("|                     Listar locação data especifica         |");
+			gotoxy(23,18);printf("|                     Listar filmes em atraso                |");
+			gotoxy(23,19);printf("|                     Listar devolução                       |");
 				for(int i=24;i<84;i++){
-					gotoxy(i,11);printf("-"); //For para o prenchimento da parte inferior do menu
+					gotoxy(i,20);printf("-"); //For para o prenchimento da parte inferior do menu
 				}
 			gotoxy(24,posicao);printf("%c%c",62,62);gotoxy(82,posicao);printf("%c%c",60,60);  //setinhas de seleção
 			tecla=getch();
 				if(tecla == ABAIXO){
 					posicao=posicao+1;
-					if(posicao==11){
+					if(posicao==19){
 						posicao=6;
 					}
 				}
 				if (tecla == ACIMA){
 					posicao=posicao-1;
 					if(posicao==5){
-						posicao=10;
+						posicao=19;
 					}
 				}
 		}while(tecla!= ENTER);
@@ -749,24 +882,55 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
         			exibe(gen);
         			goto inicio;
 				break;
+				
 				case 7:
 					insereInicio_filme(fil, gen);
         			exibe_filme(fil);
         			goto inicio;
 				break;
+				
 				case 8:
 					insereInicio_cliente(clin);
         			exibe_cliente(clin);
         			goto inicio;
 				break;
+				
 				case 9:
 					insereInicio_funcionario(func);
 					exibe_funcionario(func);
 					goto inicio;
 				break;
+				
 				case 10:
-					return 0; //sair do programa
+					
+					goto inicio;
+				break;
+				
+				case 11:
+					
+					goto inicio;
 				break;	
+				
+				case 12:
+					
+					goto inicio;
+				break;	
+				
+				case 13:
+					
+					goto inicio;
+				break;	
+				
+				case 14:
+					
+					goto inicio;
+				break;
+					
+				case 15:
+					
+					goto inicio;
+				break;
+					
 			}	
 	return posicao;
 } 
