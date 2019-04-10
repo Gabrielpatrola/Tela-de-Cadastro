@@ -94,6 +94,8 @@ typedef struct filme{
 
 int tam;
 int tam_loc;
+int tam_devo;
+
 void inicia(generos *gen){
     gen->prox = NULL;
     tam=0;
@@ -115,8 +117,20 @@ void inicia_locacao(locacoes *loc){
     tam=0;
 }
 
+void inicia_devolucao(devolucoes *devo){
+    devo->prox = NULL;
+    tam=0;
+}
+
 int vazia(generos *gen){
     if(gen->prox == NULL)
+        return 1;
+        else
+        return 0;
+}
+
+int vazia_devolucao(devolucoes *devo){
+    if(devo->prox == NULL)
         return 1;
         else
         return 0;
@@ -259,14 +273,26 @@ int funcionarioExiste(funcionarios *func, int cod_func){
     return 0;
 }
 
+int filmeExiste_genero(filmes *fil, int cod_gen){
+    filmes *tmp;
+	tmp = fil->prox;
+	while(tmp != NULL) {
+		if(tmp->cod_genero == cod_gen)
+			return 1;
+		else
+		   tmp = tmp->prox;
+	}
+    return 0;
+}
+
 int filmeExiste(filmes *fil, int cod_filme){
     filmes *tmp;
-    float teste;
+    float valor;
 	tmp = fil->prox;
 	while(tmp != NULL) {
 		if(tmp->cod_filme == cod_filme){
-			teste = tmp->valor; 
-			return teste;
+			valor = tmp->valor; 
+			return valor;
 		}
 		else
 		   tmp = tmp->prox;
@@ -396,32 +422,6 @@ void libera_filme(filmes *fil){
             atual = proxfilmes;
         }
     }
-}
-
-void insere(generos *gen){
-    int pos,
-    count;
-    printf("Em que posicao, [de 1 ate %d] voce deseja inserir: ", tam);
-    scanf("%d", &pos);
-     
-    if(pos>0 && pos <= tam){
-        if(pos==1)
-            insereInicio(gen);
-        else{
-            generos *atual = gen->prox,
-            *anterior=gen; 
-            generos *novo=aloca();
-            for(count=1 ; count < pos ; count++){
-                anterior=atual;
-                atual=atual->prox;
-            }
-            anterior->prox=novo;
-            novo->prox = atual;
-            tam++;
-        }  
-     }
-    else
-        printf("Elemento invalido\n\n");  
 }
 
 generos *retiraInicio(generos *gen){
@@ -858,7 +858,88 @@ void insere_locacao(locacoes *loc, filmes *fil, clientes *clin, funcionarios *fu
         printf("Elemento invalido\n\n");  
 }
 
-int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoes *loc){
+devolucoes *aloca_devolucao(){
+    devolucoes *novo=(devolucoes *) malloc(sizeof(devolucoes));
+    if(!novo){
+        printf("Sem memoria disponivel!\n");
+        exit(1);
+    }
+    else{
+        printf("Digite o Codigo do locero: "); 
+        scanf("%d", &novo->cod_loc); 
+        fflush(stdin);
+        
+        printf("Digite o nome do locero:");
+        //fgets(novo->nome_locero, 80, stdin);
+        fflush(stdin);
+        return novo;
+    }
+}
+
+void insereInicio_devolucao(devolucoes *devo){
+    devolucoes *novo=aloca_devolucao(); 
+    devolucoes *oldHead = devo->prox;
+    devo->prox = novo;
+    novo->prox = oldHead;
+    tam_devo++;
+}
+
+void exibe_devolucao(devolucoes *devo){
+    system("cls");
+    if(vazia_devolucao(devo)){
+        printf("loc vazia!\n\n");
+        return;
+    }
+    devolucoes *ptr;
+    ptr = devo->prox;
+    while( ptr != NULL){
+        //printf("Codigo [%d]\n", ptr->cod_locme);
+        //printf("Nome:%s\n", ptr->nome_locme);
+        ptr = ptr->prox;
+    }
+        printf("\n\n");
+}
+
+void libera_devolucao(devolucoes *devo){
+    if(!vazia_devolucao(devo)){
+        devolucoes *proxdevolucoes,
+        *atual;
+        atual = devo->prox;
+        while(atual != NULL){
+            proxdevolucoes = atual->prox;
+            free(atual);
+            atual = proxdevolucoes;
+        }
+    }
+}
+
+void insere_devolucao(devolucoes *devo){
+    int pos,
+    count;
+    printf("Em que posicao, [de 1 ate %d] voce deseja inserir: ", tam_devo);
+    scanf("%d", &pos);
+     
+    if(pos>0 && pos <= tam_devo){
+        if(pos==1)
+            insereInicio_devolucao(devo);
+        else{
+            devolucoes *atual = devo->prox,
+            *anterior=devo; 
+            devolucoes *novo=aloca_devolucao();
+            for(count=1 ; count < pos ; count++){
+                anterior=atual;
+                atual=atual->prox;
+            }
+            anterior->prox=novo;
+            novo->prox = atual;
+            tam_devo++;
+        }  
+     }
+    else
+        printf("Elemento invalido\n\n");  
+}
+
+int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoes *loc, devolucoes *devo){
     generos *tmp;
     filmes *ptr;
    	system("cls");
@@ -943,7 +1024,7 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 				break;	
 				
 				case 12:
-					
+					retira(gen);
 					goto inicio;
 				break;	
 				
@@ -974,6 +1055,7 @@ int main(){
     clientes *clin = (clientes *) malloc(sizeof(clientes));
     funcionarios *func = (funcionarios *) malloc(sizeof(funcionarios));
     locacoes *loc = (locacoes *) malloc(sizeof(locacoes));
+    devolucoes *devo = (devolucoes *) malloc(sizeof(devolucoes));
     
 	if(!gen && !fil && !clin && !func && !loc){
         printf("Sem memoria disponivel!\n");
@@ -985,12 +1067,14 @@ int main(){
         inicia_cliente(clin);
         inicia_funcionario(func);
         inicia_locacao(loc);
- 		opcao(gen, fil, clin, func, loc);
+        inicia_devolucao(devo);
+ 		opcao(gen, fil, clin, func, loc, devo);
         free(gen);
         free(fil);
         free(clin);
         free(func);
         free(loc);
+        free(devo);
         return 0;
     }
 }
