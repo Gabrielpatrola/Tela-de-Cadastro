@@ -395,32 +395,6 @@ void libera_filme(filmes *fil){
     }
 }
 
-void insere_filme(filmes *fil, generos *gen){
-    int pos,
-    count;
-    printf("Em que posicao, [de 1 ate %d] voce deseja inserir: ", tam);
-    scanf("%d", &pos);
-     
-    if(pos>0 && pos <= tam){
-        if(pos==1)
-            insereInicio_filme(fil, gen);
-        else{
-            filmes *atual = fil->prox,
-            *anterior=fil; 
-            filmes *novo=aloca_filme(gen);
-            for(count=1 ; count < pos ; count++){
-                anterior=atual;
-                atual=atual->prox;
-            }
-            anterior->prox=novo;
-            novo->prox = atual;
-            tam++;
-        }  
-     }
-    else
-        printf("Elemento invalido\n\n");  
-}
-
 void insere(generos *gen){
     int pos,
     count;
@@ -747,26 +721,65 @@ void libera_funcionario(funcionarios *func){
     }
 }
 
-locacoes *aloca_locacao(){
+locacoes *aloca_locacao(filmes *fil, clientes *clin, funcionarios *func){
+	int aux;
+	int filme;
+	int funcionario;
+	int cliente;
     locacoes *novo=(locacoes *) malloc(sizeof(locacoes));
     if(!novo){
         printf("Sem memoria disponivel!\n");
         exit(1);
     }
     else{
-        printf("Digite o Codigo do locero: "); 
-        //scanf("%d", &novo->cod_loc); 
-        fflush(stdin);
-        
-        printf("Digite o nome do locero:");
-        //fgets(novo->nome_locero, 80, stdin);
-        fflush(stdin);
-        return novo;
+    	inicio:
+    	system("cls");
+    	printf("Digite o codigo do filme");
+    	scanf("%d", &aux);
+    	filmeExiste(fil, aux);
+    	if(filmeExiste(fil, aux) == 1){
+			filme = aux;
+			cliente:	
+		 	printf("Digite o Codigo do Cliente:"); 
+        	scanf("%d", &aux);
+        	fflush(stdin);
+        	clienteExiste(clin, aux);
+        	if(clienteExiste(clin, aux) == 1){
+        		cliente = aux;
+        		funcionario:
+        		printf("Digite o Codigo do Funcionario:");
+        		scanf("%d", &aux);
+        		fflush(stdin);
+        		funcionarioExiste(func, aux);
+        		if(funcionarioExiste(func, aux) == 1){
+        			funcionario = aux;
+        			printf("sucesso");
+				}
+				else{
+					printf("Erro no codigo de funcionario\n");
+					system("pause");
+					system("cls");
+					goto funcionario;
+				}
+			}
+     		else{
+     			printf("Codigo de cliente invalido!\n");
+     			system("pause");
+     			system("cls");
+     			goto cliente;
+			 }
+		}
+       else{
+       	printf("Codigo de Filme invalido!\n");
+       	system("pause");
+       	goto inicio;
+	   }
+	   return novo;
     }
 }
 
-void insereInicio_locacao(locacoes *loc){
-    locacoes *novo=aloca_locacao(); 
+void insereInicio_locacao(locacoes *loc, filmes *fil, clientes *clin ,funcionarios *func){
+    locacoes *novo=aloca_locacao(fil, clin, func); 
     locacoes *oldHead = loc->prox;
     loc->prox = novo;
     novo->prox = oldHead;
@@ -802,7 +815,7 @@ void libera_locacao(locacoes *loc){
     }
 }
 
-void insere_locacao(locacoes *loc){
+void insere_locacao(locacoes *loc, filmes *fil, clientes *clin, funcionarios *func){
     int pos,
     count;
     printf("Em que posicao, [de 1 ate %d] voce deseja inserir: ", tam_loc);
@@ -810,11 +823,11 @@ void insere_locacao(locacoes *loc){
      
     if(pos>0 && pos <= tam_loc){
         if(pos==1)
-            insereInicio_locacao(loc);
+            insereInicio_locacao(loc, fil, clin, func);
         else{
             locacoes *atual = loc->prox,
             *anterior=loc; 
-            locacoes *novo=aloca_locacao();
+            locacoes *novo=aloca_locacao(fil, clin, func);
             for(count=1 ; count < pos ; count++){
                 anterior=atual;
                 atual=atual->prox;
@@ -902,7 +915,8 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 				break;
 				
 				case 10:
-					
+					insereInicio_locacao(loc, fil, clin, func);
+					exibe_locacao(loc);
 					goto inicio;
 				break;
 				
