@@ -300,6 +300,42 @@ int filmeExiste(filmes *fil, int cod_filme){
     return 0;
 }
 
+int locacaoExiste(locacoes *loc, int cod_loc){
+    locacoes *tmp;
+	tmp = loc->prox;
+	while(tmp != NULL) {
+		if(tmp->cod_loc == cod_loc)
+			return 1;
+		else
+		   tmp = tmp->prox;
+	}
+    return 0;
+}
+
+int clienteExiste_loc(locacoes *loc, int cod_clin){
+    locacoes *tmp;
+    tmp = loc->prox;
+    while(tmp != NULL) {
+        if(tmp->cod_clin == cod_clin)
+            return 1;
+        else
+           tmp = tmp->prox;
+    }
+    return 0;
+}
+
+int funcionarioExiste_loc(locacoes *loc, int cod_func){
+    locacoes *tmp;
+    tmp = loc->prox;
+    while(tmp != NULL) {
+        if(tmp->cod_func == cod_func)
+            return 1;
+        else
+           tmp = tmp->prox;
+    }
+    return 0;
+}
+
 filmes *aloca_filme(generos *gen){
 	int aux;
 	generos *tmp;
@@ -871,26 +907,30 @@ locacoes  *retira_locacoes (locacoes  *loc){
     }
 }
 
-devolucoes *aloca_devolucao(){
+devolucoes *aloca_devolucao(locacoes *loc){
     devolucoes *novo=(devolucoes *) malloc(sizeof(devolucoes));
+    int aux;
     if(!novo){
         printf("Sem memoria disponivel!\n");
         exit(1);
     }
     else{
-        printf("Digite o Codigo do locero: "); 
-        scanf("%d", &novo->cod_loc); 
-        fflush(stdin);
-
-        printf("Digite o nome do locero:");
-        //fgets(novo->nome_locero, 80, stdin);
-        fflush(stdin);
+ 		printf("Digite o codigo da locação: ");
+ 		scanf("%d", &aux);
+ 		locacaoExiste(loc,aux);
+ 		if (locacaoExiste(loc,aux) == 1){
+ 			
+ 			
+		 }
+ 		else{
+ 			printf("Codigo de locacao invalido");
+		 }
         return novo;
     }
 }
 
-void insereInicio_devolucao(devolucoes *devo){
-    devolucoes *novo=aloca_devolucao(); 
+void insereInicio_devolucao(devolucoes *devo, locacoes *loc){
+    devolucoes *novo=aloca_devolucao(loc); 
     devolucoes *oldHead = devo->prox;
     devo->prox = novo;
     novo->prox = oldHead;
@@ -924,32 +964,6 @@ void libera_devolucao(devolucoes *devo){
             atual = proxdevolucoes;
         }
     }
-}
-
-void insere_devolucao(devolucoes *devo){
-    int pos,
-    count;
-    printf("Em que posicao, [de 1 ate %d] voce deseja inserir: ", tam_devo);
-    scanf("%d", &pos);
-
-    if(pos>0 && pos <= tam_devo){
-        if(pos==1)
-            insereInicio_devolucao(devo);
-        else{
-            devolucoes *atual = devo->prox,
-            *anterior=devo; 
-            devolucoes *novo=aloca_devolucao();
-            for(count=1 ; count < pos ; count++){
-                anterior=atual;
-                atual=atual->prox;
-            }
-            anterior->prox=novo;
-            novo->prox = atual;
-            tam_devo++;
-        }  
-     }
-    else
-        printf("Elemento invalido\n\n");  
 }
 
 int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoes *loc, devolucoes *devo){
@@ -1047,7 +1061,6 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 				break;
 				case 15:
 					exibe_locacao(loc);
-					retira_locacoes(loc);
 					goto inicio;
 				break;
 				case 16:
