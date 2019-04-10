@@ -136,6 +136,13 @@ int vazia_cliente(clientes *clin){
         return 0;
 }
 
+int vazia_funcionario(funcionarios *func){
+    if(func->prox == NULL)
+        return 1;
+        else
+        return 0;
+}
+
 generos *aloca(){
     generos *novo=(generos *) malloc(sizeof(generos));
     if(!novo){
@@ -587,6 +594,116 @@ void libera_cliente(clientes *clin){
     }
 }
 
+funcionarios *aloca_funcionario(){
+    funcionarios *novo=(funcionarios *) malloc(sizeof(funcionarios));
+    if(!novo){
+        printf("Sem memoria disponivel!\n");
+        exit(1);
+    }
+    else{
+       	system("cls");
+    	for(int i=24;i<90;i++){
+			gotoxy(i,15);printf("-"); //For para o prenchimento da parte inferior do menu
+		}        
+		for(int i=6;i<15;i++){
+			gotoxy(90,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		for(int i=6;i<15;i++){
+			gotoxy(23,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		gotoxy(24,5);printf("---------------------------- FUNCIONARIOS-------------------------");
+    	gotoxy(25,6);printf("Digite o Codigo do Funcionario: ");
+		scanf("%d", &novo->cod_func); 
+        fflush(stdin);
+        
+        gotoxy(25,7);printf("Digite o nome do funcionario:");
+        fgets(novo->nome_func, 80, stdin);
+       	fflush(stdin);
+        
+		gotoxy(25,8);printf("Digite a data de nascimento:");
+       	fgets(novo->nasc_func, 11, stdin);
+        fflush(stdin);
+        
+        gotoxy(25,9);printf("Digite o RG:");
+        fgets(novo->rg_func, 13, stdin);
+        fflush(stdin);
+
+		gotoxy(25,10);printf("Digite o CPF: "); 
+        fgets(novo->cpf_func, 15, stdin);
+        fflush(stdin);
+        
+        gotoxy(25,11);printf("Digite o Celular: "); 
+        fgets(novo->cel_func, 15, stdin);
+        fflush(stdin);
+        
+        gotoxy(25,12);printf("Digite o Email: "); 
+        fgets(novo->email_func, 50, stdin);
+        fflush(stdin);
+        
+        gotoxy(25,13);printf("Digite a data de admissão: "); 
+        fgets(novo->data_admissao, 11, stdin);
+        fflush(stdin);
+        
+        gotoxy(25,14);system("pause");
+        return novo;
+    }
+}
+
+void insereInicio_funcionario(funcionarios *func){
+    funcionarios *novo=aloca_funcionario(); 
+    funcionarios *oldHead = func->prox;
+    func->prox = novo;
+    novo->prox = oldHead;
+    tam++;
+}
+
+void exibe_funcionario(funcionarios *func){
+    system("cls");
+    if(vazia_funcionario(func)){
+        printf("func vazia!\n\n");
+        return;
+    }
+    funcionarios *ptr;
+    ptr = func->prox;
+    while( ptr != NULL){
+ for(int i=24;i<90;i++){
+			gotoxy(i,15);printf("-"); //For para o prenchimento da parte inferior do menu
+		}        
+		for(int i=6;i<15;i++){
+			gotoxy(90,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+		for(int i=6;i<15;i++){
+			gotoxy(23,i);printf("|"); //For para o prenchimento da parte lateral do menu
+		} 
+    	gotoxy(24,5);printf("---------------------------- FUNCIONARIOS ----------------------------");
+        gotoxy(25,6);printf("Codigo [ %d ]", ptr->cod_func);
+        gotoxy(25,7);printf("Nome : %s", ptr->nome_func);
+        gotoxy(25,8);printf("Nascimento : %s", ptr->nasc_func);
+        gotoxy(25,9);printf("RG : %s", ptr->rg_func);
+        gotoxy(25,10);printf("CPF :  %s", ptr->cpf_func);
+        gotoxy(25,11);printf("Celular : %s", ptr->cel_func);
+        gotoxy(25,12);printf("E-mail : %s", ptr->email_func);
+        gotoxy(25,13);printf("Data Admissão : %s", ptr->data_admissao);
+        ptr = ptr->prox;
+        gotoxy(25,14);system("pause");
+    }
+        printf("\n\n");
+}
+
+void libera_funcionario(funcionarios *func){
+    if(!vazia_funcionario(func)){
+        funcionarios *proxfuncionarios,
+        *atual;
+        atual = func->prox;
+        while(atual != NULL){
+            proxfuncionarios = atual->prox;
+            free(atual);
+            atual = proxfuncionarios;
+        }
+    }
+}
+
+
 int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoes *loc){
     generos *tmp;
     filmes *ptr;
@@ -643,7 +760,9 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
         			goto inicio;
 				break;
 				case 9:
-					//sobre(); //chamada para o sub menu "sobre"
+					insereInicio_funcionario(func);
+					exibe_funcionario(func);
+					goto inicio;
 				break;
 				case 10:
 					return 0; //sair do programa
@@ -651,7 +770,6 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 			}	
 	return posicao;
 } 
-
 
 int main(){
 	system("Color 1A");
