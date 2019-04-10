@@ -300,7 +300,6 @@ int filmeExiste(filmes *fil, int cod_filme){
     return 0;
 }
 
-
 filmes *aloca_filme(generos *gen){
 	int aux;
 	generos *tmp;
@@ -374,7 +373,6 @@ void insereInicio_filme(filmes *fil, generos *gen){
     novo->prox = oldHead;
     tam++;
 }
-
 
 void exibe_filme(filmes *fil){
     system("cls");
@@ -503,6 +501,7 @@ filmes *retira_filmes(filmes *fil){
         return NULL;
     }
 }
+
 clientes *aloca_cliente(){
     clientes *novo=(clientes *) malloc(sizeof(clientes));
     if(!novo){
@@ -872,6 +871,87 @@ locacoes  *retira_locacoes (locacoes  *loc){
     }
 }
 
+devolucoes *aloca_devolucao(){
+    devolucoes *novo=(devolucoes *) malloc(sizeof(devolucoes));
+    if(!novo){
+        printf("Sem memoria disponivel!\n");
+        exit(1);
+    }
+    else{
+        printf("Digite o Codigo do locero: "); 
+        scanf("%d", &novo->cod_loc); 
+        fflush(stdin);
+
+        printf("Digite o nome do locero:");
+        //fgets(novo->nome_locero, 80, stdin);
+        fflush(stdin);
+        return novo;
+    }
+}
+
+void insereInicio_devolucao(devolucoes *devo){
+    devolucoes *novo=aloca_devolucao(); 
+    devolucoes *oldHead = devo->prox;
+    devo->prox = novo;
+    novo->prox = oldHead;
+    tam_devo++;
+}
+
+void exibe_devolucao(devolucoes *devo){
+    system("cls");
+    if(vazia_devolucao(devo)){
+        printf("loc vazia!\n\n");
+        return;
+    }
+    devolucoes *ptr;
+    ptr = devo->prox;
+    while( ptr != NULL){
+        //printf("Codigo [%d]\n", ptr->cod_locme);
+        //printf("Nome:%s\n", ptr->nome_locme);
+        ptr = ptr->prox;
+    }
+        printf("\n\n");
+}
+
+void libera_devolucao(devolucoes *devo){
+    if(!vazia_devolucao(devo)){
+        devolucoes *proxdevolucoes,
+        *atual;
+        atual = devo->prox;
+        while(atual != NULL){
+            proxdevolucoes = atual->prox;
+            free(atual);
+            atual = proxdevolucoes;
+        }
+    }
+}
+
+void insere_devolucao(devolucoes *devo){
+    int pos,
+    count;
+    printf("Em que posicao, [de 1 ate %d] voce deseja inserir: ", tam_devo);
+    scanf("%d", &pos);
+
+    if(pos>0 && pos <= tam_devo){
+        if(pos==1)
+            insereInicio_devolucao(devo);
+        else{
+            devolucoes *atual = devo->prox,
+            *anterior=devo; 
+            devolucoes *novo=aloca_devolucao();
+            for(count=1 ; count < pos ; count++){
+                anterior=atual;
+                atual=atual->prox;
+            }
+            anterior->prox=novo;
+            novo->prox = atual;
+            tam_devo++;
+        }  
+     }
+    else
+        printf("Elemento invalido\n\n");  
+}
+
 int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoes *loc, devolucoes *devo){
     generos *tmp;
     filmes *ptr;
@@ -926,7 +1006,6 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
         			exibe(gen);
         			goto inicio;
 				break;
-				
 				case 7:
 					insereInicio_filme(fil, gen);
         			exibe_filme(fil);
@@ -938,53 +1017,44 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
         			exibe_cliente(clin);
         			goto inicio;
 				break;
-				
 				case 9:
 					insereInicio_funcionario(func);
 					exibe_funcionario(func);
 					goto inicio;
 				break;
-				
 				case 10:
 					insereInicio_locacao(loc, fil, clin, func);
 					exibe_locacao(loc);
 					goto inicio;
 				break;
-				
 				case 11:
 					exibe_locacao(loc);
 					retira_locacoes(loc);
 					system("pause");
 					goto inicio;
 				break;	
-				
 				case 12:
 					retira(gen);
 					goto inicio;
 				break;	
-				
 				case 13:
 					retira_filmes(fil);
 					goto inicio;
 				break;	
-				
 				case 14:
 					//retira_funcionarios(func);
 					goto inicio;
 				break;
-					
 				case 15:
 					exibe_locacao(loc);
 					retira_locacoes(loc);
 					goto inicio;
 				break;
-				
 				case 16:
 					//exibe_locacao(loc);
 					//retira_locacoes(loc);
 					goto inicio;
 				break;
-					
 				case 17:
 					//exibe_locacao(loc);
 					//retira_locacoes(loc);
