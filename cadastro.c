@@ -471,29 +471,52 @@ generos *retiraInicio(generos *gen){
     }    
 }
 
-generos *retira(generos *gen){
+clientes *retiraInicio_cliente(clientes *clin){
+    if(clin->prox == NULL){
+        printf("clin ja esta vazia\n");
+        return NULL;
+    }
+    else{
+        clientes *tmp = clin->prox;
+        clin->prox = tmp->prox;
+        tam--;
+        return tmp;
+    }    
+}
+
+generos *retira(generos *gen, filmes *fil){
     int opt,
     count;
     printf("Que posicao, [de 1 ate %d] voce deseja retirar: ", tam);
     scanf("%d", &opt);
-     
     if(opt>0 && opt <= tam){
-        if(opt==1)
+        if(opt==1){
+        	filmeExiste_genero(fil, opt);
+        	if(filmeExiste_genero(fil, opt) == 1)
+            	printf("Não foi possivel retirar!");
+            else
             return retiraInicio(gen);
+        }
         else{
-            generos *atual = gen->prox,
-            *anterior=gen; 
-            for(count=1 ; count < opt ; count++){
-                anterior=atual;
-                atual=atual->prox;
-            } 
-            anterior->prox=atual->prox;
-            tam--;
-            return atual;
+        	filmeExiste_genero(fil, opt);
+        	if(filmeExiste_genero(fil, opt) == 1){
+            	printf("Não foi possivel retirar!");
+            }
+            else{
+           		generos *atual = gen->prox,
+            	*anterior=gen; 
+            	for(count=1 ; count < opt ; count++){
+                	anterior=atual;
+                	atual=atual->prox;
+            	} 
+            	anterior->prox=atual->prox;
+            	tam--;
+            	return atual;
+        	}
         }
      }
     else{
-        printf("Elemento invalido\n\n");
+        printf("nào foi possivel retirar\n\n");
         return NULL;
     }
 }
@@ -589,6 +612,43 @@ clientes *aloca_cliente(){
         fflush(stdin);
         gotoxy(25,14);system("pause");
         return novo;
+    }
+}
+
+clientes *retira_cliente(clientes *clin, locacoes *loc){
+    int opt,
+    count;
+    printf("Que posicao, [de 1 ate %d] voce deseja retirar: ", tam);
+    scanf("%d", &opt);
+    clienteExiste_loc(loc, opt);
+    if(opt>0 && opt <= tam){
+        if(opt==1){
+            if(clienteExiste_loc(loc, opt) == 1)
+                printf("Não foi possivel retirar!");
+            else
+            return retiraInicio_cliente(clin);
+        }
+        else{
+            clienteExiste_loc(loc, opt);
+            if(clienteExiste_loc(loc, opt) == 1){
+                printf("Não foi possivel retirar!");
+            }
+            else{
+                clientes *atual = clin->prox,
+                *anterior=clin; 
+                for(count=1 ; count < opt ; count++){
+                    anterior=atual;
+                    atual=atual->prox;
+                } 
+                anterior->prox=atual->prox;
+                tam--;
+                return atual;
+            }
+        }
+     }
+    else{
+        printf("nào foi possivel retirar\n\n");
+        return NULL;
     }
 }
 
@@ -756,6 +816,56 @@ void libera_funcionario(funcionarios *func){
             free(atual);
             atual = proxfuncionarios;
         }
+    }
+}
+
+funcionarios *retiraInicio_funcionario(funcionarios *func){
+    if(func->prox == NULL){
+        printf("func ja esta vazia\n");
+        return NULL;
+    }
+    else{
+        funcionarios *tmp = func->prox;
+        func->prox = tmp->prox;
+        tam--;
+        return tmp;
+    }    
+}
+
+funcionarios *retira_funcionario(funcionarios *func, locacoes *loc){
+    int opt,
+    count;
+    printf("Que posicao, [de 1 ate %d] voce deseja retirar: ", tam);
+    scanf("%d", &opt);
+    funcionarioExiste_loc(loc, opt);
+    if(opt>0 && opt <= tam){
+        if(opt==1){
+            if(funcionarioExiste_loc(loc, opt) == 1)
+                printf("Não foi possivel retirar!");
+            else
+            return retiraInicio_funcionario(func);
+        }
+        else{
+            funcionarioExiste_loc(loc, opt);
+            if(funcionarioExiste_loc(loc, opt) == 1){
+                printf("Não foi possivel retirar!");
+            }
+            else{
+                funcionarios *atual = func->prox,
+                *anterior=func; 
+                for(count=1 ; count < opt ; count++){
+                    anterior=atual;
+                    atual=atual->prox;
+                } 
+                anterior->prox=atual->prox;
+                tam--;
+                return atual;
+            }
+        }
+     }
+    else{
+        printf("nào foi possivel retirar\n\n");
+        return NULL;
     }
 }
 
@@ -1048,15 +1158,15 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 					goto inicio;
 				break;	
 				case 12:
-					retira(gen);
+					retira(gen, fil);
 					goto inicio;
 				break;	
 				case 13:
-					retira_filmes(fil);
+					retira_cliente(clin, loc);
 					goto inicio;
 				break;	
 				case 14:
-					//retira_funcionarios(func);
+					retira_funcionario(func, loc);
 					goto inicio;
 				break;
 				case 15:
@@ -1064,8 +1174,8 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 					goto inicio;
 				break;
 				case 16:
-					//exibe_locacao(loc);
-					//retira_locacoes(loc);
+					exibe_locacao(loc);
+					retira_locacoes(loc);
 					goto inicio;
 				break;
 				case 17:
@@ -1079,8 +1189,7 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 					goto inicio;
 				break;
 				case 19:
-					//exibe_locacao(loc);
-					//retira_locacoes(loc);
+					exibe_devolucao(devo);
 					goto inicio;
 				break;			
 							
