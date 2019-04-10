@@ -47,10 +47,10 @@ typedef struct locacao{
     float valor_total;
     float juros;
     float desc;
-    int cod_cliente;
+    int cod_clin;
     int cod_func;
     char pagamento[8];
-    int cod_filme;
+    int cod_fil;
     struct locacao *prox;
 }locacoes;
 
@@ -261,10 +261,13 @@ int funcionarioExiste(funcionarios *func, int cod_func){
 
 int filmeExiste(filmes *fil, int cod_filme){
     filmes *tmp;
+    float teste;
 	tmp = fil->prox;
 	while(tmp != NULL) {
-		if(tmp->cod_filme == cod_filme)
-			return 1;
+		if(tmp->cod_filme == cod_filme){
+			teste = tmp->valor; 
+			return teste;
+		}
 		else
 		   tmp = tmp->prox;
 	}
@@ -723,9 +726,6 @@ void libera_funcionario(funcionarios *func){
 
 locacoes *aloca_locacao(filmes *fil, clientes *clin, funcionarios *func){
 	int aux;
-	int filme;
-	int funcionario;
-	int cliente;
     locacoes *novo=(locacoes *) malloc(sizeof(locacoes));
     if(!novo){
         printf("Sem memoria disponivel!\n");
@@ -737,23 +737,40 @@ locacoes *aloca_locacao(filmes *fil, clientes *clin, funcionarios *func){
     	printf("Digite o codigo do filme");
     	scanf("%d", &aux);
     	filmeExiste(fil, aux);
-    	if(filmeExiste(fil, aux) == 1){
-			filme = aux;
+  		novo->valor_total = filmeExiste(fil, aux);
+    	if(filmeExiste(fil, aux) >= 1){
+			novo->cod_fil = aux;
 			cliente:	
 		 	printf("Digite o Codigo do Cliente:"); 
         	scanf("%d", &aux);
         	fflush(stdin);
-        	clienteExiste(clin, aux);
         	if(clienteExiste(clin, aux) == 1){
-        		cliente = aux;
+        		novo->cod_clin = aux;
         		funcionario:
         		printf("Digite o Codigo do Funcionario:");
         		scanf("%d", &aux);
         		fflush(stdin);
         		funcionarioExiste(func, aux);
         		if(funcionarioExiste(func, aux) == 1){
-        			funcionario = aux;
-        			printf("sucesso");
+        			novo->cod_func = aux;
+        			gotoxy(24,5);printf("---------------------------- LOCAÇÃO-------------------------");
+    				gotoxy(25,6);printf("Digite o Codigo da locação: ");
+					scanf("%d", &novo->cod_loc); 
+        			fflush(stdin);
+        
+        			gotoxy(25,7);printf("Digite a data de locação:");
+        			fgets(novo->data_loc, 11, stdin);
+       				fflush(stdin);
+        
+					gotoxy(25,8);printf("Digite a data de devolução:");
+       				fgets(novo->data_devo, 11, stdin);
+        			fflush(stdin);
+        
+        			gotoxy(25,9);printf("Digite o pagamento:");
+        			fgets(novo->pagamento, 8, stdin);
+        			fflush(stdin);
+        		
+        			gotoxy(25,14);system("pause");	
 				}
 				else{
 					printf("Erro no codigo de funcionario\n");
@@ -969,7 +986,6 @@ int main(){
         inicia_funcionario(func);
         inicia_locacao(loc);
  		opcao(gen, fil, clin, func, loc);
-    
         free(gen);
         free(fil);
         free(clin);
