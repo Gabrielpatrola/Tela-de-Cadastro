@@ -487,7 +487,7 @@ clientes *retiraInicio_cliente(clientes *clin){
 generos *retira(generos *gen, filmes *fil){
     int opt,
     count;
-    printf("Que posicao, [de 1 ate %d] voce deseja retirar: ", tam);
+    printf("Qual codigo de gênero, [de 1 ate %d] voce deseja retirar: ", tam);
     scanf("%d", &opt);
     if(opt>0 && opt <= tam){
         if(opt==1){
@@ -537,7 +537,7 @@ filmes *retiraInicio_filmes(filmes *fil){
 filmes *retira_filmes(filmes *fil){
     int opt,
     count;
-    printf("Que posicao, [de 1 ate %d] voce deseja retirar: ", tam);
+    printf("Qual codigo de filme, [de 1 ate %d] voce deseja retirar: ", tam);
     scanf("%d", &opt);
      
     if(opt>0 && opt <= tam){
@@ -618,7 +618,7 @@ clientes *aloca_cliente(){
 clientes *retira_cliente(clientes *clin, locacoes *loc){
     int opt,
     count;
-    printf("Que posicao, [de 1 ate %d] voce deseja retirar: ", tam);
+    printf("Qual codigo de cliente, [de 1 ate %d] voce deseja retirar: ", tam);
     scanf("%d", &opt);
     clienteExiste_loc(loc, opt);
     if(opt>0 && opt <= tam){
@@ -835,7 +835,7 @@ funcionarios *retiraInicio_funcionario(funcionarios *func){
 funcionarios *retira_funcionario(funcionarios *func, locacoes *loc){
     int opt,
     count;
-    printf("Que posicao, [de 1 ate %d] voce deseja retirar: ", tam);
+    printf("Qual codigo de funcionário, [de 1 ate %d] voce deseja retirar: ", tam);
     scanf("%d", &opt);
     funcionarioExiste_loc(loc, opt);
     if(opt>0 && opt <= tam){
@@ -1220,19 +1220,18 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 					goto inicio;
 				break;	
 				case 13:
-					retira_cliente(clin, loc);
+					retira_filmes(fil);
 					goto inicio;
 				break;	
 				case 14:
-					retira_funcionario(func, loc);
+					retira_cliente(clin, loc);
 					goto inicio;
 				break;
 				case 15:
-					exibe_locacao(loc);
+					retira_funcionario(func, loc);
 					goto inicio;
 				break;
 				case 16:
-					exibe_locacao(loc);
 					retira_locacoes(loc);
 					goto inicio;
 				break;
@@ -1242,7 +1241,8 @@ int opcao(generos *gen, filmes *fil, clientes *clin, funcionarios *func, locacoe
 					goto inicio;
 				break;		
 				case 18:
-					//exibe_locacao(loc);
+					exibe_locacao(loc);
+					system("pause");
 					//retira_locacoes(loc);
 					goto inicio;
 				break;
